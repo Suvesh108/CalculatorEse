@@ -1,0 +1,179 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GPA Calculator – Grade Point Average | CalculatorEse</title>
+  <meta name="description" content="Free GPA calculator. Calculate your semester or cumulative GPA from your course grades and credit hours. Supports 4.0 scale.">
+  <meta name="keywords" content="GPA calculator, grade point average, college GPA, semester GPA, cumulative GPA, 4.0 scale">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://calculatorese.io/pages/math/gpa.html">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/mobile.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+<div class="app-shell">
+<main class="main-content" id="main" role="main">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/index.html">Home</a><span class="breadcrumb-sep">›</span><span>Math</span><span class="breadcrumb-sep">›</span><span>GPA Calculator</span></nav>
+  <div class="page-header">
+    <div class="page-header__eyebrow">Math</div>
+    <h1 class="page-header__title">🎓 GPA Calculator</h1>
+    <p class="page-header__desc">Calculate your semester GPA and cumulative GPA using course grades and credit hours on a 4.0 scale.</p>
+  </div>
+
+  <div class="calc-layout">
+    <div class="calculator-card">
+      <h2 class="calc-title">Semester Courses</h2>
+      <p class="calc-desc">Add your courses with grade and credit hours.</p>
+      <div id="courses">
+        <!-- Course rows injected by JS -->
+      </div>
+      <div style="display:flex;gap:12px;margin-top:8px">
+        <button class="btn btn-outlined" onclick="addCourse()">+ Add Course</button>
+        <button class="btn btn-ghost" onclick="clearCourses()">Clear All</button>
+      </div>
+      <div class="divider"></div>
+      <!-- Cumulative GPA section -->
+      <h3 style="font-size:1rem;margin-bottom:12px">Add Previous GPA (Optional)</h3>
+      <div class="form-row">
+        <div class="input-group"><label for="prev_gpa">Previous GPA</label><input type="number" id="prev_gpa" class="mui-input" value="" placeholder="e.g. 3.5" step="0.01" min="0" max="4"></div>
+        <div class="input-group"><label for="prev_credits">Credit Hours Earned</label><input type="number" id="prev_credits" class="mui-input" value="" placeholder="e.g. 60" min="0"></div>
+      </div>
+      <button class="btn btn-primary btn-block btn-lg" onclick="calcGPA()">Calculate GPA</button>
+    </div>
+
+    <div class="calculator-card" id="gpaResult" style="display:none">
+      <h2 class="calc-title">Results</h2>
+      <div class="summary-cards" style="margin-bottom:24px">
+        <div class="summary-card" style="grid-column:span 2">
+          <div class="summary-card__label">Semester GPA</div>
+          <div class="summary-card__value primary" id="gpa_semester" style="font-size:2rem">—</div>
+        </div>
+        <div class="summary-card" style="display:none" id="gpa_cum_card">
+          <div class="summary-card__label">Cumulative GPA</div>
+          <div class="summary-card__value" id="gpa_cumulative">—</div>
+        </div>
+        <div class="summary-card"><div class="summary-card__label">Credit Hours</div><div class="summary-card__value" id="gpa_credits">—</div></div>
+        <div class="summary-card"><div class="summary-card__label">Grade Points</div><div class="summary-card__value" id="gpa_points">—</div></div>
+      </div>
+      <!-- Standing -->
+      <div id="gpa_standing" class="chip" style="font-size:0.9rem;margin-bottom:16px">—</div>
+      <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:12px;color:var(--text-secondary)">COURSE BREAKDOWN</h3>
+      <table class="results-table">
+        <thead><tr><th>Course</th><th>Grade</th><th>Credits</th><th>Points</th></tr></thead>
+        <tbody id="gpa_table"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Grade Scale Reference -->
+  <div class="card" style="margin-top:24px">
+    <h3 style="margin-bottom:12px">4.0 GPA Scale</h3>
+    <table class="results-table">
+      <thead><tr><th>Letter</th><th>GPA Points</th><th>Percentage</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>A+</td><td>4.0</td><td>97–100%</td><td>Outstanding</td></tr>
+        <tr><td>A</td><td>4.0</td><td>93–96%</td><td>Excellent</td></tr>
+        <tr><td>A-</td><td>3.7</td><td>90–92%</td><td>Very Good</td></tr>
+        <tr><td>B+</td><td>3.3</td><td>87–89%</td><td>Good</td></tr>
+        <tr><td>B</td><td>3.0</td><td>83–86%</td><td>Above Average</td></tr>
+        <tr><td>B-</td><td>2.7</td><td>80–82%</td><td>Satisfactory</td></tr>
+        <tr><td>C+</td><td>2.3</td><td>77–79%</td><td>Average</td></tr>
+        <tr><td>C</td><td>2.0</td><td>73–76%</td><td>Below Average</td></tr>
+        <tr><td>D</td><td>1.0</td><td>60–66%</td><td>Poor</td></tr>
+        <tr><td>F</td><td>0.0</td><td>0–59%</td><td>Failing</td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+</div>
+<script src="/js/ui.js"></script>
+<script>
+  const GRADE_MAP = {'A+':4,'A':4,'A-':3.7,'B+':3.3,'B':3,'B-':2.7,'C+':2.3,'C':2,'C-':1.7,'D+':1.3,'D':1,'D-':0.7,'F':0};
+  let courseCount = 0;
+
+  function addCourse(name = '', grade = 'A', credits = 3) {
+    courseCount++;
+    const id = courseCount;
+    const opts = Object.keys(GRADE_MAP).map(g => `<option value="${g}" ${g===grade?'selected':''}>${g}</option>`).join('');
+    const row = document.createElement('div');
+    row.style.cssText = 'display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:end;margin-bottom:12px';
+    row.id = `course_${id}`;
+    row.innerHTML = `
+      <div class="input-group" style="margin:0"><input type="text" class="mui-input" id="cn_${id}" placeholder="Course name" value="${name}"></div>
+      <div class="input-group" style="margin:0"><select class="mui-select" id="cg_${id}" style="padding-left:8px">${opts}</select></div>
+      <div class="input-group" style="margin:0;width:70px"><input type="number" class="mui-input" id="cc_${id}" value="${credits}" min="0" max="12" style="text-align:center"></div>
+      <button class="icon-btn" onclick="removeCourse(${id})">✕</button>`;
+    document.getElementById('courses').appendChild(row);
+  }
+
+  function removeCourse(id) {
+    const el = document.getElementById(`course_${id}`);
+    if (el) el.remove();
+  }
+
+  function clearCourses() {
+    document.getElementById('courses').innerHTML = '';
+    courseCount = 0;
+    document.getElementById('gpaResult').style.display = 'none';
+    initDefaultCourses();
+  }
+
+  function initDefaultCourses() {
+    const defaults = [
+      ['Mathematics 101', 'A', 4],
+      ['English Composition', 'B+', 3],
+      ['Introduction to CS', 'A-', 3],
+      ['Chemistry', 'B', 4],
+    ];
+    defaults.forEach(d => addCourse(...d));
+  }
+
+  function calcGPA() {
+    const rows = document.querySelectorAll('#courses > div');
+    let totalCredits = 0, totalPoints = 0, tableRows = '';
+    rows.forEach((row, i) => {
+      const id = row.id.replace('course_', '');
+      const name    = document.getElementById(`cn_${id}`)?.value || `Course ${i+1}`;
+      const grade   = document.getElementById(`cg_${id}`)?.value;
+      const credits = parseFloat(document.getElementById(`cc_${id}`)?.value) || 0;
+      const pts     = (GRADE_MAP[grade] ?? 0) * credits;
+      totalCredits += credits; totalPoints += pts;
+      tableRows += `<tr><td>${name}</td><td>${grade}</td><td>${credits}</td><td>${pts.toFixed(2)}</td></tr>`;
+    });
+
+    const semGPA = totalCredits > 0 ? totalPoints / totalCredits : 0;
+
+    // Cumulative
+    const prevGPA = parseFloat(document.getElementById('prev_gpa').value) || 0;
+    const prevCreds = parseFloat(document.getElementById('prev_credits').value) || 0;
+    const cumGPA = (prevCreds + totalCredits) > 0
+      ? (prevGPA * prevCreds + totalPoints) / (prevCreds + totalCredits) : semGPA;
+
+    let standing, chipClass;
+    if (semGPA >= 3.9) { standing = 'Summa Cum Laude'; chipClass = 'chip-success'; }
+    else if (semGPA >= 3.5) { standing = "Magna Cum Laude"; chipClass = 'chip-success'; }
+    else if (semGPA >= 3.0) { standing = 'Cum Laude (Dean\'s List)'; chipClass = ''; }
+    else if (semGPA >= 2.0) { standing = 'Good Standing'; chipClass = ''; }
+    else { standing = 'Academic Probation Risk'; chipClass = 'chip-error'; }
+
+    document.getElementById('gpa_semester').textContent = semGPA.toFixed(2);
+    document.getElementById('gpa_credits').textContent  = totalCredits;
+    document.getElementById('gpa_points').textContent   = totalPoints.toFixed(2);
+    if (prevCreds > 0) {
+      document.getElementById('gpa_cumulative').textContent = cumGPA.toFixed(2);
+      document.getElementById('gpa_cum_card').style.display = 'block';
+    }
+    const sEl = document.getElementById('gpa_standing');
+    sEl.textContent = standing; sEl.className = `chip ${chipClass}`;
+    sEl.style.cssText = 'font-size:0.9rem;margin-bottom:16px;display:inline-flex';
+    document.getElementById('gpa_table').innerHTML = tableRows;
+    document.getElementById('gpaResult').style.display = 'block';
+  }
+
+  initDefaultCourses();
+</script>
+</body>
+</html>
+

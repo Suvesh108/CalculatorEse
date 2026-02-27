@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BMI Calculator – Body Mass Index for Adults | CalculatorEse</title>
+  <meta name="description" content="Free BMI calculator for adults. Calculate your Body Mass Index using metric or imperial units and find out if you're in a healthy weight range.">
+  <meta name="keywords" content="BMI calculator, body mass index, healthy weight, overweight, obesity, underweight">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://calculatorese.io/pages/health/bmi.html">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/mobile.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚖️</text></svg>">
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+<div class="app-shell">
+<main class="main-content" id="main" role="main">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/index.html">Home</a><span class="breadcrumb-sep">›</span><span>Health</span><span class="breadcrumb-sep">›</span><span>BMI Calculator</span></nav>
+  <div class="page-header">
+    <div class="page-header__eyebrow">Health</div>
+    <h1 class="page-header__title">⚖️ BMI Calculator</h1>
+    <p class="page-header__desc">Calculate your Body Mass Index to assess if you're in a healthy weight range for your height. Supports metric and imperial units.</p>
+  </div>
+
+  <div data-tabs style="margin-bottom:24px">
+    <div class="tabs" style="max-width:300px">
+      <button class="tab-btn" onclick="setUnit('metric')">Metric (kg/cm)</button>
+      <button class="tab-btn" onclick="setUnit('imperial')">Imperial (lb/in)</button>
+    </div>
+  </div>
+
+  <div class="calc-layout">
+    <div class="calculator-card">
+      <h2 class="calc-title">Your Measurements</h2>
+      <!-- Metric -->
+      <div id="metric_inputs">
+        <div class="input-group has-suffix"><label for="bmi_cm">Height</label><input type="number" id="bmi_cm" class="mui-input" value="170" min="50" max="300"><span class="input-suffix">cm</span></div>
+        <div class="input-group has-suffix"><label for="bmi_kg">Weight</label><input type="number" id="bmi_kg" class="mui-input" value="70" min="10" max="500"><span class="input-suffix">kg</span></div>
+      </div>
+      <!-- Imperial -->
+      <div id="imperial_inputs" style="display:none">
+        <div class="form-row">
+          <div class="input-group has-suffix"><label for="bmi_ft">Height (ft)</label><input type="number" id="bmi_ft" class="mui-input" value="5" min="1" max="9"><span class="input-suffix">ft</span></div>
+          <div class="input-group has-suffix"><label for="bmi_in">Height (in)</label><input type="number" id="bmi_in" class="mui-input" value="7" min="0" max="11"><span class="input-suffix">in</span></div>
+        </div>
+        <div class="input-group has-suffix"><label for="bmi_lb">Weight</label><input type="number" id="bmi_lb" class="mui-input" value="154" min="10" max="1000"><span class="input-suffix">lbs</span></div>
+      </div>
+      <div class="input-group"><label for="bmi_age">Age</label><input type="number" id="bmi_age" class="mui-input" value="30" min="2" max="120"></div>
+      <div class="input-group"><label for="bmi_sex">Sex</label>
+        <select id="bmi_sex" class="mui-select"><option value="male">Male</option><option value="female">Female</option></select>
+      </div>
+      <button class="btn btn-primary btn-block btn-lg" onclick="calcBMI()">Calculate BMI</button>
+    </div>
+
+    <div class="calculator-card" id="bmiResult" style="display:none">
+      <h2 class="calc-title">Your BMI</h2>
+      <div style="text-align:center;padding:24px 0">
+        <div id="bmi_value" style="font-size:4rem;font-weight:800;font-family:var(--font-mono);color:var(--primary-light)">—</div>
+        <div id="bmi_label" class="chip" style="margin:12px auto;font-size:1rem;padding:8px 20px">—</div>
+      </div>
+      <!-- BMI Scale -->
+      <div style="position:relative;margin-bottom:16px">
+        <div style="display:flex;height:10px;border-radius:5px;overflow:hidden">
+          <div style="flex:1;background:#42A5F5" title="Underweight"></div>
+          <div style="flex:1.5;background:#66BB6A" title="Normal"></div>
+          <div style="flex:1;background:#FFA726" title="Overweight"></div>
+          <div style="flex:1.5;background:#EF5350" title="Obese"></div>
+        </div>
+        <div id="bmi_marker" style="position:absolute;top:-4px;width:18px;height:18px;border-radius:50%;background:white;border:3px solid var(--primary);transform:translateX(-50%);transition:left 0.5s;left:0%"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text-secondary);margin-bottom:24px">
+        <span>Underweight<br>&lt;18.5</span><span style="text-align:center">Normal<br>18.5–24.9</span><span style="text-align:center">Overweight<br>25–29.9</span><span style="text-align:right">Obese<br>≥30</span>
+      </div>
+      <div class="summary-cards">
+        <div class="summary-card"><div class="summary-card__label">Category</div><div class="summary-card__value" id="bmi_cat" style="font-size:1rem">—</div></div>
+        <div class="summary-card"><div class="summary-card__label">Healthy Weight Range</div><div class="summary-card__value" id="bmi_range" style="font-size:1rem">—</div></div>
+      </div>
+      <div class="alert alert-info" style="margin-top:16px">ℹ️ BMI is a screening tool, not a diagnostic. Consult your doctor for a full health assessment.</div>
+    </div>
+  </div>
+
+  <!-- BMI Table -->
+  <div class="card" style="margin-top:24px">
+    <h3 style="margin-bottom:16px">BMI Classification Table</h3>
+    <table class="results-table">
+      <thead><tr><th>BMI Range</th><th>Category</th><th>Health Risk</th></tr></thead>
+      <tbody>
+        <tr><td>&lt; 18.5</td><td><span class="chip" style="background:rgba(66,165,245,0.15);color:#64B5F6;border-color:rgba(66,165,245,0.3)">Underweight</span></td><td>Nutritional deficiency risk</td></tr>
+        <tr><td>18.5 – 24.9</td><td><span class="chip chip-success">Normal Weight</span></td><td>Minimal risk</td></tr>
+        <tr><td>25.0 – 29.9</td><td><span class="chip chip-warning">Overweight</span></td><td>Moderate risk</td></tr>
+        <tr><td>30.0 – 34.9</td><td><span class="chip chip-error">Obese Class I</span></td><td>High risk</td></tr>
+        <tr><td>35.0 – 39.9</td><td><span class="chip chip-error">Obese Class II</span></td><td>Very high risk</td></tr>
+        <tr><td>≥ 40</td><td><span class="chip chip-error">Obese Class III</span></td><td>Extremely high risk</td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+</div>
+<script src="/js/ui.js"></script>
+<script>
+  let unit = 'metric';
+  function setUnit(u) {
+    unit = u;
+    document.getElementById('metric_inputs').style.display = u === 'metric' ? 'block' : 'none';
+    document.getElementById('imperial_inputs').style.display = u === 'imperial' ? 'block' : 'none';
+  }
+
+  function calcBMI() {
+    let heightM, weightKg;
+    if (unit === 'metric') {
+      heightM = parseFloat(document.getElementById('bmi_cm').value) / 100;
+      weightKg = parseFloat(document.getElementById('bmi_kg').value);
+    } else {
+      const ft = parseFloat(document.getElementById('bmi_ft').value);
+      const inches = parseFloat(document.getElementById('bmi_in').value);
+      heightM = ((ft * 12) + inches) * 0.0254;
+      weightKg = parseFloat(document.getElementById('bmi_lb').value) * 0.453592;
+    }
+    if (!heightM || !weightKg) return;
+    const bmi = weightKg / (heightM * heightM);
+    const bmiRnd = Math.round(bmi * 10) / 10;
+
+    let cat, chipClass;
+    if (bmi < 18.5) { cat = 'Underweight'; chipClass = ''; }
+    else if (bmi < 25) { cat = 'Normal Weight'; chipClass = 'chip-success'; }
+    else if (bmi < 30) { cat = 'Overweight'; chipClass = 'chip-warning'; }
+    else { cat = 'Obese'; chipClass = 'chip-error'; }
+
+    document.getElementById('bmi_value').textContent = bmiRnd;
+    const labelEl = document.getElementById('bmi_label');
+    labelEl.textContent = cat;
+    labelEl.className = `chip ${chipClass}`;
+    labelEl.style.cssText = 'margin:12px auto;font-size:1rem;padding:8px 20px;display:inline-flex';
+    document.getElementById('bmi_cat').textContent = cat;
+
+    // Healthy range
+    const lo = (18.5 * heightM * heightM), hi = (24.9 * heightM * heightM);
+    document.getElementById('bmi_range').textContent = unit === 'metric'
+      ? `${lo.toFixed(1)} – ${hi.toFixed(1)} kg`
+      : `${(lo * 2.20462).toFixed(1)} – ${(hi * 2.20462).toFixed(1)} lbs`;
+
+    // Marker position on scale (BMI 10–50 range)
+    const pct = Math.min(Math.max((bmi - 10) / 40 * 100, 0), 100);
+    document.getElementById('bmi_marker').style.left = pct + '%';
+    document.getElementById('bmiResult').style.display = 'block';
+  }
+  window.addEventListener('load', calcBMI);
+</script>
+</body>
+</html>
+

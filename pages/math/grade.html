@@ -1,0 +1,192 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grade Calculator – Weighted Average & Final Grade | CalculatorEse</title>
+  <meta name="description" content="Free grade calculator. Calculate your weighted course average, find the grade needed on your final exam, and track your assignment scores.">
+  <meta name="keywords" content="grade calculator, weighted average, final grade needed, assignment grades, test score calculator">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://calculatorese.io/pages/math/grade.html">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/mobile.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>">
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+<div class="app-shell">
+<main class="main-content" id="main" role="main">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/index.html">Home</a><span class="breadcrumb-sep">›</span><span>Math</span><span class="breadcrumb-sep">›</span><span>Grade Calculator</span></nav>
+  <div class="page-header">
+    <div class="page-header__eyebrow">Math</div>
+    <h1 class="page-header__title">📝 Grade Calculator</h1>
+    <p class="page-header__desc">Calculate your course grade using weighted averages, find what you need on a final exam, and convert scores to letter grades.</p>
+  </div>
+
+  <div data-tabs>
+    <div class="tabs" style="max-width:600px">
+      <button class="tab-btn">Weighted Average</button>
+      <button class="tab-btn">Final Grade Needed</button>
+    </div>
+
+    <!-- Weighted Average -->
+    <div class="tab-panel">
+      <div class="calc-layout">
+        <div class="calculator-card">
+          <h2 class="calc-title">Assignment Grades</h2>
+          <p class="calc-desc">Enter each assessment with its score and weight.</p>
+          <div id="gradeRows">
+            <!-- Rows injected -->
+          </div>
+          <button class="btn btn-outlined" onclick="addGradeRow()">+ Add Assignment</button>
+          <div class="divider"></div>
+          <button class="btn btn-primary btn-block btn-lg" onclick="calcGrade()">Calculate Grade</button>
+        </div>
+
+        <div class="calculator-card" id="gradeResult" style="display:none">
+          <h2 class="calc-title">Your Grade</h2>
+          <div style="text-align:center;padding:16px 0">
+            <div id="gr_pct" style="font-size:3.5rem;font-weight:800;color:var(--primary-light);font-family:var(--font-mono)">—</div>
+            <div id="gr_letter" class="chip" style="font-size:1.2rem;margin:10px auto;padding:8px 24px;display:inline-flex">—</div>
+          </div>
+          <div class="summary-cards">
+            <div class="summary-card"><div class="summary-card__label">Total Weight</div><div class="summary-card__value" id="gr_weight">—</div></div>
+            <div class="summary-card"><div class="summary-card__label">Points Earned</div><div class="summary-card__value" id="gr_points">—</div></div>
+          </div>
+          <div class="divider"></div>
+          <table class="results-table">
+            <thead><tr><th>Assignment</th><th>Score</th><th>Weight</th><th>Contribution</th></tr></thead>
+            <tbody id="gr_table"></tbody>
+          </table>
+          <div class="progress-bar" style="margin-top:16px"><div class="progress-bar__fill" id="gr_bar"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Final Grade Needed -->
+    <div class="tab-panel">
+      <div class="calc-layout">
+        <div class="calculator-card">
+          <h2 class="calc-title">Final Exam Calculator</h2>
+          <p class="calc-desc">What do you need on the final to achieve your target grade?</p>
+          <div class="input-group has-suffix"><label for="fg_current">Current Grade</label><input type="number" id="fg_current" class="mui-input" value="82" min="0" max="100"><span class="input-suffix">%</span></div>
+          <div class="input-group has-suffix"><label for="fg_finalWeight">Final Exam Weight</label><input type="number" id="fg_finalWeight" class="mui-input" value="30" min="1" max="100"><span class="input-suffix">%</span></div>
+          <div class="input-group has-suffix"><label for="fg_target">Target Grade</label><input type="number" id="fg_target" class="mui-input" value="85" min="0" max="100"><span class="input-suffix">%</span></div>
+          <button class="btn btn-primary btn-block btn-lg" onclick="calcFinalNeeded()">Calculate</button>
+          <div id="fg_result" class="result-box" style="display:none">
+            <div class="result-box__label">Score Needed on Final</div>
+            <div class="result-box__value" id="fg_needed">—</div>
+            <div class="result-box__sub" id="fg_msg">—</div>
+          </div>
+        </div>
+        <div class="calculator-card">
+          <h3 style="margin-bottom:12px">Grade Scale</h3>
+          <table class="results-table">
+            <thead><tr><th>Score</th><th>Grade</th></tr></thead>
+            <tbody>
+              <tr><td>90–100%</td><td><span class="chip chip-success">A</span></td></tr>
+              <tr><td>80–89%</td><td><span class="chip">B</span></td></tr>
+              <tr><td>70–79%</td><td><span class="chip chip-warning">C</span></td></tr>
+              <tr><td>60–69%</td><td><span class="chip chip-warning">D</span></td></tr>
+              <tr><td>Below 60%</td><td><span class="chip chip-error">F</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</div>
+<script src="/js/ui.js"></script>
+<script>
+  let gradeCount = 0;
+
+  function letterGrade(pct) {
+    if (pct >= 97) return 'A+';
+    if (pct >= 93) return 'A';
+    if (pct >= 90) return 'A-';
+    if (pct >= 87) return 'B+';
+    if (pct >= 83) return 'B';
+    if (pct >= 80) return 'B-';
+    if (pct >= 77) return 'C+';
+    if (pct >= 73) return 'C';
+    if (pct >= 70) return 'C-';
+    if (pct >= 67) return 'D+';
+    if (pct >= 63) return 'D';
+    if (pct >= 60) return 'D-';
+    return 'F';
+  }
+  function chipForGrade(g) {
+    if (g.startsWith('A')) return 'chip-success';
+    if (g.startsWith('B')) return '';
+    if (g.startsWith('C')) return 'chip-warning';
+    return 'chip-error';
+  }
+
+  function addGradeRow(name = '', score = '', weight = '') {
+    gradeCount++;
+    const id = gradeCount;
+    const row = document.createElement('div');
+    row.style.cssText = 'display:grid;grid-template-columns:1fr 90px 90px 36px;gap:8px;align-items:end;margin-bottom:12px';
+    row.id = `grade_${id}`;
+    row.innerHTML = `
+      <div class="input-group" style="margin:0"><input class="mui-input" id="gn_${id}" placeholder="Assignment name" value="${name}"></div>
+      <div class="input-group" style="margin:0"><input type="number" class="mui-input" id="gs_${id}" placeholder="Score%" value="${score}" min="0" max="100"></div>
+      <div class="input-group has-suffix" style="margin:0"><input type="number" class="mui-input" id="gw_${id}" placeholder="Wt%" value="${weight}" min="0" max="100" style="padding-right:28px"><span class="input-suffix" style="bottom:12px;right:8px">%</span></div>
+      <button class="icon-btn" onclick="document.getElementById('grade_${id}').remove()">✕</button>`;
+    document.getElementById('gradeRows').appendChild(row);
+  }
+
+  function initDefaultGrades() {
+    const defaults = [
+      ['Homework', 85, 20], ['Midterm Exam', 78, 30], ['Project', 91, 20], ['Participation', 95, 10]
+    ];
+    defaults.forEach(d => addGradeRow(...d));
+  }
+
+  function calcGrade() {
+    const rows = document.querySelectorAll('#gradeRows > div');
+    let totalWeight = 0, weightedSum = 0, tableRows = '';
+    rows.forEach((row, i) => {
+      const id = row.id.replace('grade_', '');
+      const name   = document.getElementById(`gn_${id}`)?.value || `Item ${i+1}`;
+      const score  = parseFloat(document.getElementById(`gs_${id}`)?.value) || 0;
+      const weight = parseFloat(document.getElementById(`gw_${id}`)?.value) || 0;
+      const contrib = (score * weight / 100);
+      totalWeight += weight; weightedSum += contrib;
+      tableRows += `<tr><td>${name}</td><td>${score}%</td><td>${weight}%</td><td>${contrib.toFixed(2)}pts</td></tr>`;
+    });
+
+    const pct = totalWeight > 0 ? (weightedSum / totalWeight) * 100 : 0;
+    const letter = letterGrade(pct);
+    const el = document.getElementById('gr_letter');
+    el.textContent = letter; el.className = `chip ${chipForGrade(letter)}`;
+    el.style.cssText = 'font-size:1.2rem;margin:10px auto;padding:8px 24px;display:inline-flex';
+    document.getElementById('gr_pct').textContent  = pct.toFixed(2) + '%';
+    document.getElementById('gr_weight').textContent = totalWeight + '%';
+    document.getElementById('gr_points').textContent = weightedSum.toFixed(2);
+    document.getElementById('gr_table').innerHTML = tableRows;
+    setTimeout(() => { document.getElementById('gr_bar').style.width = Math.min(pct, 100) + '%'; }, 50);
+    document.getElementById('gradeResult').style.display = 'block';
+  }
+
+  function calcFinalNeeded() {
+    const current = parseFloat(document.getElementById('fg_current').value);
+    const fw = parseFloat(document.getElementById('fg_finalWeight').value);
+    const target = parseFloat(document.getElementById('fg_target').value);
+    const needed = (target - current * (1 - fw / 100)) / (fw / 100);
+    const el = document.getElementById('fg_needed');
+    el.textContent = needed.toFixed(2) + '%';
+    let msg = '';
+    if (needed > 100) msg = '⚠️ Not achievable (need over 100%)';
+    else if (needed < 0) msg = '✅ Already achieved! You\'ll pass regardless.';
+    else msg = `Achieve ${needed.toFixed(1)}% on your final to reach ${target}%.`;
+    el.style.color = needed > 100 ? 'var(--error)' : needed < 0 ? 'var(--success)' : 'var(--primary-light)';
+    document.getElementById('fg_msg').textContent = msg;
+    document.getElementById('fg_result').style.display = 'block';
+  }
+
+  initDefaultGrades();
+</script>
+</body>
+</html>
+

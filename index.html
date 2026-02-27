@@ -1,0 +1,214 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CalculatorEse – Free Online Calculators </title>
+  <meta name="description" content="CalculatorEse offers 17+ free online calculators for financial planning (mortgage, loan, investment), health (BMI, calories, BMR), and math (scientific, GPA, percentage). Fast, accurate, and easy to use.">
+  <meta name="keywords" content="online calculator, mortgage calculator, BMI calculator, loan calculator, scientific calculator, compound interest, GPA calculator, free calculator tools">
+  <meta name="author" content="CalculatorEse">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://calculatorese.io/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="CalculatorEse – Free Online Calculators">
+  <meta property="og:description" content="17+ free calculators for financial, health, and math needs. Mortgage, BMI, scientific calc and more.">
+  <meta property="og:url" content="https://calculatorese.io/">
+  <meta property="og:site_name" content="CalculatorEse">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="CalculatorEse – Free Online Calculators">
+  <meta name="twitter:description" content="17+ free calculators for financial, health, and math needs.">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "CalculatorEse",
+    "url": "https://calculatorese.io/",
+    "description": "17+ free online calculators for financial, health, and math",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {"@type": "EntryPoint", "urlTemplate": "https://calculatorese.io/?q={search_term_string}"},
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/mobile.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧮</text></svg>">
+
+</head>
+<body>
+<div class="app-shell">
+  <!-- App Bar, Sidebar, Footer injected by ui.js -->
+
+  <main class="main-content" id="main" role="main">
+    <!-- Hero -->
+    <section class="hero" aria-labelledby="hero-title">
+      <h1 class="hero__title" id="hero-title">Every Calculator<br>You'll Ever Need</h1>
+      <p class="hero__subtitle">17 precise calculators for financial planning, health tracking, and mathematical problem-solving. Free, fast, and always available.</p>
+
+      <div class="search-box" role="search">
+        <input type="search" id="heroSearch" placeholder="Search calculators… e.g. 'mortgage', 'BMI', 'GPA'" aria-label="Search all calculators" autocomplete="off">
+        <button class="search-box__icon" aria-label="Search"><i class="las la-search"></i></button>
+        <div class="search-dropdown" id="heroSearchDropdown" role="listbox"></div>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <div class="stats-strip animate-in">
+      <div class="stat"><div class="stat__val">17</div><div class="stat__lbl">Calculators</div></div>
+      <div class="stat"><div class="stat__val">3</div><div class="stat__lbl">Categories</div></div>
+      <div class="stat"><div class="stat__val">100%</div><div class="stat__lbl">Free</div></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Financial -->
+    <section aria-labelledby="fin-heading">
+      <div class="section-header animate-in">
+        <h2 id="fin-heading">💰 Financial Calculators</h2>
+        
+      </div>
+      <div class="category-grid">
+        <a href="/pages/financial/mortgage.html" class="category-card animate-in delay-1" style="--cat-color:#5C6BC0;--cat-color-2:#00BFA5;" aria-label="Mortgage Calculator">
+          <div class="category-card__icon">🏠</div>
+          <div class="category-card__title">Mortgage Calculator</div>
+          <div class="category-card__count">Monthly payments, total interest, amortization schedule</div>
+          <div class="category-card__list"><span class="category-card__tag">Monthly Payment</span><span class="category-card__tag">Amortization</span><span class="category-card__tag">Total Interest</span></div>
+        </a>
+        <a href="/pages/financial/loan.html" class="category-card animate-in delay-2" style="--cat-color:#26A69A;--cat-color-2:#5C6BC0;" aria-label="Loan Calculator">
+          <div class="category-card__icon">💳</div>
+          <div class="category-card__title">Loan Calculator</div>
+          <div class="category-card__count">Personal, auto, student loan repayment</div>
+          <div class="category-card__list"><span class="category-card__tag">Repayment</span><span class="category-card__tag">Interest</span><span class="category-card__tag">Term</span></div>
+        </a>
+        <a href="/pages/financial/interest.html" class="category-card animate-in delay-3" style="--cat-color:#FFA726;--cat-color-2:#FF7043;" aria-label="Interest Calculator">
+          <div class="category-card__icon">📈</div>
+          <div class="category-card__title">Interest Calculator</div>
+          <div class="category-card__count">Simple & compound interest on savings</div>
+          <div class="category-card__list"><span class="category-card__tag">Simple</span><span class="category-card__tag">Compound</span><span class="category-card__tag">APY</span></div>
+        </a>
+        <a href="/pages/financial/compound.html" class="category-card animate-in delay-4" style="--cat-color:#66BB6A;--cat-color-2:#26A69A;" aria-label="Compound Interest Calculator">
+          <div class="category-card__icon">💰</div>
+          <div class="category-card__title">Compound Interest</div>
+          <div class="category-card__count">See how your money grows exponentially</div>
+          <div class="category-card__list"><span class="category-card__tag">Daily</span><span class="category-card__tag">Monthly</span><span class="category-card__tag">Annually</span></div>
+        </a>
+        <a href="/pages/financial/investment.html" class="category-card animate-in" style="--cat-color:#AB47BC;--cat-color-2:#5C6BC0;" aria-label="Investment Calculator">
+          <div class="category-card__icon">📊</div>
+          <div class="category-card__title">Investment Calculator</div>
+          <div class="category-card__count">Project future value and ROI</div>
+          <div class="category-card__list"><span class="category-card__tag">ROI</span><span class="category-card__tag">Future Value</span><span class="category-card__tag">Inflation</span></div>
+        </a>
+        <a href="/pages/financial/payment.html" class="category-card animate-in delay-1" style="--cat-color:#EF5350;--cat-color-2:#FF7043;" aria-label="Payment Calculator">
+          <div class="category-card__icon">💵</div>
+          <div class="category-card__title">Payment Calculator</div>
+          <div class="category-card__count">Find the right payment plan for your budget</div>
+          <div class="category-card__list"><span class="category-card__tag">Monthly</span><span class="category-card__tag">Budget</span><span class="category-card__tag">Term</span></div>
+        </a>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Health -->
+    <section aria-labelledby="health-heading">
+      <div class="section-header animate-in">
+        <h2 id="health-heading">❤️ Health Calculators</h2>
+        
+      </div>
+      <div class="category-grid">
+        <a href="/pages/health/bmi.html" class="category-card animate-in" style="--cat-color:#EF5350;--cat-color-2:#FF7043;" aria-label="BMI Calculator">
+          <div class="category-card__icon">⚖️</div>
+          <div class="category-card__title">BMI Calculator</div>
+          <div class="category-card__count">Body Mass Index – Healthy weight range</div>
+          <div class="category-card__list"><span class="category-card__tag">Underweight</span><span class="category-card__tag">Normal</span><span class="category-card__tag">Obese</span></div>
+        </a>
+        <a href="/pages/health/calorie.html" class="category-card animate-in delay-1" style="--cat-color:#FF7043;--cat-color-2:#FFA726;" aria-label="Calorie Calculator">
+          <div class="category-card__icon">🥗</div>
+          <div class="category-card__title">Calorie Calculator</div>
+          <div class="category-card__count">Daily caloric needs for your goals</div>
+          <div class="category-card__list"><span class="category-card__tag">TDEE</span><span class="category-card__tag">Weight Loss</span><span class="category-card__tag">Gain</span></div>
+        </a>
+        <a href="/pages/health/bmr.html" class="category-card animate-in delay-2" style="--cat-color:#42A5F5;--cat-color-2:#5C6BC0;" aria-label="BMR Calculator">
+          <div class="category-card__icon">🔥</div>
+          <div class="category-card__title">BMR Calculator</div>
+          <div class="category-card__count">Basal Metabolic Rate – calories at rest</div>
+          <div class="category-card__list"><span class="category-card__tag">Mifflin-St Jeor</span><span class="category-card__tag">Harris-Benedict</span></div>
+        </a>
+        <a href="/pages/health/bodyfat.html" class="category-card animate-in delay-3" style="--cat-color:#66BB6A;--cat-color-2:#26A69A;" aria-label="Body Fat Calculator">
+          <div class="category-card__icon">💪</div>
+          <div class="category-card__title">Body Fat Calculator</div>
+          <div class="category-card__count">Estimate body fat % using measurements</div>
+          <div class="category-card__list"><span class="category-card__tag">US Navy</span><span class="category-card__tag">BMI Method</span></div>
+        </a>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Math -->
+    <section aria-labelledby="math-heading">
+      <div class="section-header animate-in">
+        <h2 id="math-heading">🔢 Math Calculators</h2>
+        
+      </div>
+      <div class="category-grid">
+        <a href="/pages/math/scientific.html" class="category-card animate-in" style="--cat-color:#8E24AA;--cat-color-2:#AB47BC;" aria-label="Scientific Calculator">
+          <div class="category-card__icon">🔬</div>
+          <div class="category-card__title">Scientific Calculator</div>
+          <div class="category-card__count">Full-featured with trig functions</div>
+          <div class="category-card__list"><span class="category-card__tag">Trig</span><span class="category-card__tag">Log</span><span class="category-card__tag">Roots</span></div>
+        </a>
+        <a href="/pages/math/percentage.html" class="category-card animate-in delay-1" style="--cat-color:#0288D1;--cat-color-2:#29B6F6;" aria-label="Percentage Calculator">
+          <div class="category-card__icon" style="font-size:2rem;font-weight:700;">%</div>
+          <div class="category-card__title">Percentage Calculator</div>
+          <div class="category-card__count">All types of percent problems</div>
+          <div class="category-card__list"><span class="category-card__tag">Increase</span><span class="category-card__tag">Decrease</span><span class="category-card__tag">Difference</span></div>
+        </a>
+        <a href="/pages/math/fraction.html" class="category-card animate-in delay-2" style="--cat-color:#F57C00;--cat-color-2:#FF9800;" aria-label="Fraction Calculator">
+          <div class="category-card__icon" style="font-size:2rem;font-weight:700;">½</div>
+          <div class="category-card__title">Fraction Calculator</div>
+          <div class="category-card__count">Arithmetic on fractions</div>
+          <div class="category-card__list"><span class="category-card__tag">Add</span><span class="category-card__tag">Subtract</span><span class="category-card__tag">Simplify</span></div>
+        </a>
+        <a href="/pages/math/age.html" class="category-card animate-in delay-3" style="--cat-color:#D81B60;--cat-color-2:#EC407A;" aria-label="Age Calculator">
+          <div class="category-card__icon">🎂</div>
+          <div class="category-card__title">Age Calculator</div>
+          <div class="category-card__count">Exact age in years, months, days</div>
+          <div class="category-card__list"><span class="category-card__tag">Years</span><span class="category-card__tag">Months</span><span class="category-card__tag">Days</span></div>
+        </a>
+        <a href="/pages/math/date.html" class="category-card animate-in" style="--cat-color:#1976D2;--cat-color-2:#42A5F5;" aria-label="Date Calculator">
+          <div class="category-card__icon">📅</div>
+          <div class="category-card__title">Date Calculator</div>
+          <div class="category-card__count">Days between two dates</div>
+          <div class="category-card__list"><span class="category-card__tag">Duration</span><span class="category-card__tag">Add/Sub</span></div>
+        </a>
+        <a href="/pages/math/gpa.html" class="category-card animate-in delay-1" style="--cat-color:#388E3C;--cat-color-2:#66BB6A;" aria-label="GPA Calculator">
+          <div class="category-card__icon">🎓</div>
+          <div class="category-card__title">GPA Calculator</div>
+          <div class="category-card__count">Weighted GPA by credit hours</div>
+          <div class="category-card__list"><span class="category-card__tag">College</span><span class="category-card__tag">High School</span></div>
+        </a>
+        <a href="/pages/math/grade.html" class="category-card animate-in delay-2" style="--cat-color:#FBC02D;--cat-color-2:#FFEE58;" aria-label="Grade Calculator">
+          <div class="category-card__icon">📝</div>
+          <div class="category-card__title">Grade Calculator</div>
+          <div class="category-card__count">Weighted average & final grade</div>
+          <div class="category-card__list"><span class="category-card__tag">Weighted</span><span class="category-card__tag">Final Exam</span></div>
+        </a>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+  </main>
+</div>
+<script src="/js/ui.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,186 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loan Calculator – Monthly Repayment & Interest | CalculatorEse</title>
+  <meta name="description" content="Free loan calculator for personal, auto, and student loans. Calculate monthly payments, total interest paid, and repayment schedule.">
+  <meta name="keywords" content="loan calculator, personal loan, auto loan, student loan, monthly payment, loan repayment">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://calculatorese.io/pages/financial/loan.html">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Loan Calculator","applicationCategory":"FinanceApplication","url":"https://calculatorese.io/pages/financial/loan.html"}</script>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/mobile.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💳</text></svg>">
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+<div class="app-shell">
+  <main class="main-content" id="main" role="main">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/index.html">Home</a><span class="breadcrumb-sep">›</span>
+      <span>Financial</span><span class="breadcrumb-sep">›</span>
+      <span>Loan Calculator</span>
+    </nav>
+    <div class="page-header">
+      <div class="page-header__eyebrow">Financial</div>
+      <h1 class="page-header__title">💳 Loan Calculator</h1>
+      <p class="page-header__desc">Figure out your monthly payment, total interest, and full repayment schedule for any type of loan.</p>
+    </div>
+
+    <!-- Tabs: Calculate Payment | Calculate Loan Amount | Calculate Term -->
+    <div data-tabs style="margin-bottom:24px">
+      <div class="tabs">
+        <button class="tab-btn">Monthly Payment</button>
+        <button class="tab-btn">Loan Amount</button>
+        <button class="tab-btn">Loan Term</button>
+      </div>
+
+      <!-- Tab 1: Monthly Payment -->
+      <div class="tab-panel">
+        <div class="calc-layout">
+          <div class="calculator-card">
+            <h2 class="calc-title">Calculate Payment</h2>
+            <p class="calc-desc">Enter loan details to find your monthly payment.</p>
+            <div class="input-group has-prefix">
+              <label for="loanAmt1">Loan Amount</label>
+              <span class="input-prefix currency">$</span>
+              <input type="number" id="loanAmt1" class="mui-input" value="15000" min="0">
+            </div>
+            <div class="input-group has-suffix">
+              <label for="loanRate1">Annual Interest Rate</label>
+              <input type="number" id="loanRate1" class="mui-input" value="7.5" min="0" step="0.1">
+              <span class="input-suffix">%</span>
+            </div>
+            <div class="input-group">
+              <label for="loanTerm1">Loan Term (months)</label>
+              <input type="number" id="loanTerm1" class="mui-input" value="60" min="1">
+            </div>
+            <button class="btn btn-primary btn-block btn-lg" onclick="calcPayment()">Calculate</button>
+            <div id="payResult" class="result-box" style="display:none">
+              <div class="summary-cards">
+                <div class="summary-card"><div class="summary-card__label">Monthly Payment</div><div class="summary-card__value primary" id="p_monthly">—</div></div>
+                <div class="summary-card"><div class="summary-card__label">Total Payment</div><div class="summary-card__value" id="p_total">—</div></div>
+                <div class="summary-card"><div class="summary-card__label">Total Interest</div><div class="summary-card__value accent" id="p_interest">—</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="calculator-card" id="loanScheduleCard" style="display:none">
+            <h3 style="margin-bottom:16px">Repayment Schedule</h3>
+            <div style="overflow-y:auto;max-height:400px">
+              <table class="results-table"><thead><tr><th>Mo.</th><th>Payment</th><th>Principal</th><th>Interest</th><th>Balance</th></tr></thead>
+              <tbody id="loanBody"></tbody></table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Loan Amount -->
+      <div class="tab-panel">
+        <div class="calculator-card" style="max-width:520px">
+          <h2 class="calc-title">Calculate Loan Amount</h2>
+          <p class="calc-desc">Know what you can afford given a monthly budget.</p>
+          <div class="input-group has-prefix">
+            <label for="loanBudget">Monthly Budget</label>
+            <span class="input-prefix currency">$</span>
+            <input type="number" id="loanBudget" class="mui-input" value="400">
+          </div>
+          <div class="input-group has-suffix">
+            <label for="loanRate2">Annual Interest Rate</label>
+            <input type="number" id="loanRate2" class="mui-input" value="7.5" step="0.1">
+            <span class="input-suffix">%</span>
+          </div>
+          <div class="input-group">
+            <label for="loanTerm2">Loan Term (months)</label>
+            <input type="number" id="loanTerm2" class="mui-input" value="60">
+          </div>
+          <button class="btn btn-primary btn-block btn-lg" onclick="calcLoanAmt()">Calculate</button>
+          <div id="amtResult" class="result-box" style="display:none">
+            <div class="result-box__label">Maximum Loan Amount</div>
+            <div class="result-box__value" id="a_amount">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Loan Term -->
+      <div class="tab-panel">
+        <div class="calculator-card" style="max-width:520px">
+          <h2 class="calc-title">Calculate Loan Term</h2>
+          <p class="calc-desc">Find out how long it will take to pay off a loan.</p>
+          <div class="input-group has-prefix">
+            <label for="loanAmt3">Loan Amount</label>
+            <span class="input-prefix currency">$</span>
+            <input type="number" id="loanAmt3" class="mui-input" value="15000">
+          </div>
+          <div class="input-group has-prefix">
+            <label for="loanPayment3">Monthly Payment</label>
+            <span class="input-prefix currency">$</span>
+            <input type="number" id="loanPayment3" class="mui-input" value="350">
+          </div>
+          <div class="input-group has-suffix">
+            <label for="loanRate3">Annual Interest Rate</label>
+            <input type="number" id="loanRate3" class="mui-input" value="7.5" step="0.1">
+            <span class="input-suffix">%</span>
+          </div>
+          <button class="btn btn-primary btn-block btn-lg" onclick="calcLoanTerm()">Calculate</button>
+          <div id="termResult" class="result-box" style="display:none">
+            <div class="result-box__label">Loan Payoff</div>
+            <div class="result-box__value" id="t_term">—</div>
+            <div class="result-box__sub" id="t_info">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="/js/ui.js"></script>
+<script>
+  function calcPayment() {
+    const amt  = parseFloat(document.getElementById('loanAmt1').value);
+    const rate = parseFloat(document.getElementById('loanRate1').value) / 100 / 12;
+    const n    = parseInt(document.getElementById('loanTerm1').value);
+    if (!amt || rate <= 0 || !n) return;
+    const pmt = amt * (rate * Math.pow(1+rate,n)) / (Math.pow(1+rate,n)-1);
+    const total = pmt * n;
+    document.getElementById('p_monthly').textContent = CalculatorEse.fmtCurrency(pmt);
+    document.getElementById('p_total').textContent = CalculatorEse.fmtCurrency(total);
+    document.getElementById('p_interest').textContent = CalculatorEse.fmtCurrency(total - amt);
+    document.getElementById('payResult').style.display = 'block';
+
+    // Schedule
+    let balance = amt, body = '';
+    for (let i = 1; i <= n; i++) {
+      const interest = balance * rate;
+      const princ = pmt - interest;
+      balance = Math.max(balance - princ, 0);
+      body += `<tr><td>${i}</td><td>${CalculatorEse.fmtCurrency(pmt)}</td><td>${CalculatorEse.fmtCurrency(princ)}</td><td>${CalculatorEse.fmtCurrency(interest)}</td><td>${CalculatorEse.fmtCurrency(balance)}</td></tr>`;
+    }
+    document.getElementById('loanBody').innerHTML = body;
+    document.getElementById('loanScheduleCard').style.display = 'block';
+  }
+
+  function calcLoanAmt() {
+    const budget = parseFloat(document.getElementById('loanBudget').value);
+    const rate   = parseFloat(document.getElementById('loanRate2').value) / 100 / 12;
+    const n      = parseInt(document.getElementById('loanTerm2').value);
+    const amt = budget * (Math.pow(1+rate,n)-1) / (rate * Math.pow(1+rate,n));
+    document.getElementById('a_amount').textContent = CalculatorEse.fmtCurrency(amt);
+    document.getElementById('amtResult').style.display = 'block';
+  }
+
+  function calcLoanTerm() {
+    const amt  = parseFloat(document.getElementById('loanAmt3').value);
+    const pmt  = parseFloat(document.getElementById('loanPayment3').value);
+    const rate = parseFloat(document.getElementById('loanRate3').value) / 100 / 12;
+    if (pmt <= amt * rate) { document.getElementById('t_term').textContent = 'Payment too low'; document.getElementById('termResult').style.display='block'; return; }
+    const n = Math.log(pmt/(pmt - amt*rate)) / Math.log(1+rate);
+    const months = Math.ceil(n);
+    const years = Math.floor(months/12), rem = months % 12;
+    document.getElementById('t_term').textContent = `${years} yr${years!==1?'s':''} ${rem} mo${rem!==1?'s':''}`;
+    document.getElementById('t_info').textContent = `Total: ${CalculatorEse.fmtCurrency(pmt * months)} | Interest: ${CalculatorEse.fmtCurrency(pmt * months - amt)}`;
+    document.getElementById('termResult').style.display = 'block';
+  }
+</script>
+</body>
+</html>
+

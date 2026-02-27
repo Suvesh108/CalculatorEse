@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Calculator – Affordable Loan & Budget | CalculatorEse</title>
+  <meta name="description" content="Free payment calculator: find the monthly payment, loan amount, or term that fits your budget. Compare payment scenarios side-by-side.">
+  <meta name="keywords" content="payment calculator, monthly payment, loan budget, affordable payment, debt calculator">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://calculatorese.io/pages/financial/payment.html">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/mobile.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💵</text></svg>">
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+<div class="app-shell">
+<main class="main-content" id="main" role="main">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/index.html">Home</a><span class="breadcrumb-sep">›</span><span>Financial</span><span class="breadcrumb-sep">›</span><span>Payment Calculator</span></nav>
+  <div class="page-header">
+    <div class="page-header__eyebrow">Financial</div>
+    <h1 class="page-header__title">💵 Payment Calculator</h1>
+    <p class="page-header__desc">Find the right payment plan for your budget. Solve for payment, amount, or term depending on what you know.</p>
+  </div>
+
+  <div data-tabs>
+    <div class="tabs">
+      <button class="tab-btn">Find Payment</button>
+      <button class="tab-btn">Find Amount</button>
+      <button class="tab-btn">Find Term</button>
+    </div>
+
+    <!-- Find Payment -->
+    <div class="tab-panel">
+      <div class="calc-layout">
+        <div class="calculator-card">
+          <h2 class="calc-title">Monthly Payment</h2>
+          <p class="calc-desc">Given loan amount, rate, and term → find monthly payment.</p>
+          <div class="input-group has-prefix"><label for="pp_amt">Loan Amount</label><span class="input-prefix currency">$</span><input type="number" id="pp_amt" class="mui-input" value="20000"></div>
+          <div class="input-group has-suffix"><label for="pp_rate">Annual Interest Rate</label><input type="number" id="pp_rate" class="mui-input" value="6" step="0.1"><span class="input-suffix">%</span></div>
+          <div class="input-group"><label for="pp_term">Term (months)</label><input type="number" id="pp_term" class="mui-input" value="48"></div>
+          <button class="btn btn-primary btn-block btn-lg" onclick="findPayment()">Calculate</button>
+          <div id="pp_result" class="result-box" style="display:none">
+            <div class="summary-cards">
+              <div class="summary-card"><div class="summary-card__label">Monthly Payment</div><div class="summary-card__value primary" id="pp_monthly">—</div></div>
+              <div class="summary-card"><div class="summary-card__label">Total Paid</div><div class="summary-card__value" id="pp_total">—</div></div>
+              <div class="summary-card"><div class="summary-card__label">Total Interest</div><div class="summary-card__value accent" id="pp_int">—</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="calculator-card">
+          <h3 style="margin-bottom:16px">Payment Breakdown</h3>
+          <div style="overflow-y:auto;max-height:360px">
+            <table class="results-table"><thead><tr><th>Mo.</th><th>Payment</th><th>Principal</th><th>Interest</th><th>Balance</th></tr></thead>
+            <tbody id="pp_table"></tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Find Amount -->
+    <div class="tab-panel">
+      <div class="calculator-card" style="max-width:520px">
+        <h2 class="calc-title">Find Loan Amount</h2>
+        <div class="input-group has-prefix"><label for="pa_pmt">Monthly Payment</label><span class="input-prefix currency">$</span><input type="number" id="pa_pmt" class="mui-input" value="450"></div>
+        <div class="input-group has-suffix"><label for="pa_rate">Annual Rate</label><input type="number" id="pa_rate" class="mui-input" value="6" step="0.1"><span class="input-suffix">%</span></div>
+        <div class="input-group"><label for="pa_term">Term (months)</label><input type="number" id="pa_term" class="mui-input" value="48"></div>
+        <button class="btn btn-primary btn-block btn-lg" onclick="findAmount()">Calculate</button>
+        <div id="pa_result" class="result-box" style="display:none">
+          <div class="result-box__label">Maximum Loan Amount</div>
+          <div class="result-box__value" id="pa_amt">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Find Term -->
+    <div class="tab-panel">
+      <div class="calculator-card" style="max-width:520px">
+        <h2 class="calc-title">Find Loan Term</h2>
+        <div class="input-group has-prefix"><label for="pt_amt">Loan Amount</label><span class="input-prefix currency">$</span><input type="number" id="pt_amt" class="mui-input" value="20000"></div>
+        <div class="input-group has-prefix"><label for="pt_pmt">Monthly Payment</label><span class="input-prefix currency">$</span><input type="number" id="pt_pmt" class="mui-input" value="500"></div>
+        <div class="input-group has-suffix"><label for="pt_rate">Annual Rate</label><input type="number" id="pt_rate" class="mui-input" value="6" step="0.1"><span class="input-suffix">%</span></div>
+        <button class="btn btn-primary btn-block btn-lg" onclick="findTerm()">Calculate</button>
+        <div id="pt_result" class="result-box" style="display:none">
+          <div class="result-box__label">Payoff Period</div>
+          <div class="result-box__value" id="pt_term">—</div>
+          <div class="result-box__sub" id="pt_info">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</div>
+<script src="/js/ui.js"></script>
+<script>
+  function findPayment() {
+    const P = parseFloat(document.getElementById('pp_amt').value);
+    const r = parseFloat(document.getElementById('pp_rate').value) / 100 / 12;
+    const n = parseInt(document.getElementById('pp_term').value);
+    const pmt = P * (r * Math.pow(1+r,n)) / (Math.pow(1+r,n)-1);
+    document.getElementById('pp_monthly').textContent = CalculatorEse.fmtCurrency(pmt);
+    document.getElementById('pp_total').textContent = CalculatorEse.fmtCurrency(pmt * n);
+    document.getElementById('pp_int').textContent = CalculatorEse.fmtCurrency(pmt * n - P);
+    document.getElementById('pp_result').style.display = 'block';
+    let bal = P, rows = '';
+    for (let i = 1; i <= n; i++) {
+      const int = bal * r; const princ = pmt - int; bal = Math.max(bal - princ, 0);
+      rows += `<tr><td>${i}</td><td>${CalculatorEse.fmtCurrency(pmt)}</td><td>${CalculatorEse.fmtCurrency(princ)}</td><td>${CalculatorEse.fmtCurrency(int)}</td><td>${CalculatorEse.fmtCurrency(bal)}</td></tr>`;
+    }
+    document.getElementById('pp_table').innerHTML = rows;
+  }
+  function findAmount() {
+    const pmt = parseFloat(document.getElementById('pa_pmt').value);
+    const r   = parseFloat(document.getElementById('pa_rate').value) / 100 / 12;
+    const n   = parseInt(document.getElementById('pa_term').value);
+    const amt = pmt * (Math.pow(1+r,n)-1) / (r * Math.pow(1+r,n));
+    document.getElementById('pa_amt').textContent = CalculatorEse.fmtCurrency(amt);
+    document.getElementById('pa_result').style.display = 'block';
+  }
+  function findTerm() {
+    const P   = parseFloat(document.getElementById('pt_amt').value);
+    const pmt = parseFloat(document.getElementById('pt_pmt').value);
+    const r   = parseFloat(document.getElementById('pt_rate').value) / 100 / 12;
+    if (pmt <= P * r) { document.getElementById('pt_term').textContent = 'Payment too low'; document.getElementById('pt_result').style.display='block'; return; }
+    const n = Math.ceil(Math.log(pmt/(pmt-P*r)) / Math.log(1+r));
+    const yrs = Math.floor(n/12), mos = n%12;
+    document.getElementById('pt_term').textContent = `${yrs} years ${mos} months`;
+    document.getElementById('pt_info').textContent = `Total: ${CalculatorEse.fmtCurrency(pmt*n)} | Interest: ${CalculatorEse.fmtCurrency(pmt*n-P)}`;
+    document.getElementById('pt_result').style.display = 'block';
+  }
+</script>
+</body>
+</html>
+

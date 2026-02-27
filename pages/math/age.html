@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Age Calculator – Exact Age in Years, Months & Days | CalculatorEse</title>
+  <meta name="description" content="Free age calculator. Find your exact age in years, months, and days from your date of birth. Calculate the time between any two dates.">
+  <meta name="keywords" content="age calculator, birthday calculator, how old am I, years months days, date of birth">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://calculatorese.io/pages/math/age.html">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/mobile.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+<div class="app-shell">
+<main class="main-content" id="main" role="main">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/index.html">Home</a><span class="breadcrumb-sep">›</span><span>Math</span><span class="breadcrumb-sep">›</span><span>Age Calculator</span></nav>
+  <div class="page-header">
+    <div class="page-header__eyebrow">Math</div>
+    <h1 class="page-header__title">🎂 Age Calculator</h1>
+    <p class="page-header__desc">Find your exact age in years, months, weeks, and days from your date of birth, or calculate the time between any two dates.</p>
+  </div>
+
+  <div class="calc-layout">
+    <div class="calculator-card">
+      <h2 class="calc-title">Date of Birth</h2>
+      <div class="input-group"><label for="age_dob">Date of Birth</label><input type="date" id="age_dob" class="mui-input" value="1995-06-15"></div>
+      <div class="input-group"><label for="age_at">Age At Date (default: today)</label><input type="date" id="age_at" class="mui-input"></div>
+      <button class="btn btn-primary btn-block btn-lg" onclick="calcAge()">Calculate Age</button>
+    </div>
+
+    <div class="calculator-card" id="ageResult" style="display:none">
+      <h2 class="calc-title">Your Age</h2>
+      <div style="text-align:center;padding:16px 0">
+        <div id="age_main" style="font-size:3rem;font-weight:800;color:var(--primary-light);font-family:var(--font-mono)">—</div>
+        <div style="color:var(--text-secondary);margin-top:4px" id="age_sub">—</div>
+      </div>
+      <div class="summary-cards" style="margin-bottom:16px">
+        <div class="summary-card"><div class="summary-card__label">Years</div><div class="summary-card__value primary" id="age_years">—</div></div>
+        <div class="summary-card"><div class="summary-card__label">+ Months</div><div class="summary-card__value" id="age_months">—</div></div>
+        <div class="summary-card"><div class="summary-card__label">+ Days</div><div class="summary-card__value" id="age_days">—</div></div>
+        <div class="summary-card"><div class="summary-card__label">Total Months</div><div class="summary-card__value" id="age_total_months">—</div></div>
+        <div class="summary-card"><div class="summary-card__label">Total Weeks</div><div class="summary-card__value" id="age_total_weeks">—</div></div>
+        <div class="summary-card"><div class="summary-card__label">Total Days</div><div class="summary-card__value" id="age_total_days">—</div></div>
+      </div>
+      <div class="divider"></div>
+      <div class="summary-cards">
+        <div class="summary-card"><div class="summary-card__label">Next Birthday</div><div class="summary-card__value" id="age_next_bday" style="font-size:1rem">—</div></div>
+        <div class="summary-card"><div class="summary-card__label">Days Until</div><div class="summary-card__value accent" id="age_days_until">—</div></div>
+      </div>
+    </div>
+  </div>
+</main>
+</div>
+<script src="/js/ui.js"></script>
+<script>
+  // Set today as default "age at" date
+  document.getElementById('age_at').valueAsDate = new Date();
+
+  function calcAge() {
+    const dob = new Date(document.getElementById('age_dob').value);
+    const at  = new Date(document.getElementById('age_at').value);
+    if (isNaN(dob) || isNaN(at) || dob > at) return;
+
+    let years = at.getFullYear() - dob.getFullYear();
+    let months = at.getMonth() - dob.getMonth();
+    let days = at.getDate() - dob.getDate();
+
+    if (days < 0) {
+      months--;
+      const prevMonth = new Date(at.getFullYear(), at.getMonth(), 0);
+      days += prevMonth.getDate();
+    }
+    if (months < 0) { years--; months += 12; }
+
+    const totalDays  = Math.floor((at - dob) / (1000 * 60 * 60 * 24));
+    const totalWeeks = Math.floor(totalDays / 7);
+    const totalMonths = years * 12 + months;
+
+    document.getElementById('age_main').textContent = `${years} yrs`;
+    document.getElementById('age_sub').textContent  = `${months} months, ${days} days`;
+    document.getElementById('age_years').textContent = years;
+    document.getElementById('age_months').textContent = months;
+    document.getElementById('age_days').textContent = days;
+    document.getElementById('age_total_months').textContent = CalculatorEse.fmtNumber(totalMonths, 0);
+    document.getElementById('age_total_weeks').textContent  = CalculatorEse.fmtNumber(totalWeeks, 0);
+    document.getElementById('age_total_days').textContent   = CalculatorEse.fmtNumber(totalDays, 0);
+
+    // Next birthday
+    const nextBday = new Date(at.getFullYear(), dob.getMonth(), dob.getDate());
+    if (nextBday <= at) nextBday.setFullYear(nextBday.getFullYear() + 1);
+    const daysUntil = Math.ceil((nextBday - at) / (1000 * 60 * 60 * 24));
+    document.getElementById('age_next_bday').textContent = nextBday.toLocaleDateString('en-US', {month:'long',day:'numeric',year:'numeric'});
+    document.getElementById('age_days_until').textContent = `${daysUntil} days`;
+    document.getElementById('ageResult').style.display = 'block';
+  }
+  window.addEventListener('load', calcAge);
+</script>
+</body>
+</html>
+

@@ -1,0 +1,232 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mortgage Calculator – Monthly Payment & Amortization | CalculatorEse</title>
+  <meta name="description" content="Free mortgage calculator: calculate monthly payment, total interest paid, and full amortization schedule. Supports fixed and adjustable rates.">
+  <meta name="keywords" content="mortgage calculator, monthly payment calculator, home loan calculator, amortization schedule, mortgage interest">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://calculatorese.io/pages/financial/mortgage.html">
+  <meta property="og:title" content="Mortgage Calculator | CalculatorEse">
+  <meta property="og:description" content="Calculate your monthly mortgage payment and see a full amortization schedule.">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Mortgage Calculator","applicationCategory":"FinanceApplication","url":"https://calculatorese.io/pages/financial/mortgage.html","description":"Calculate monthly mortgage payments and amortization schedule."}</script>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/mobile.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+<div class="app-shell">
+  <main class="main-content" id="main" role="main">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/index.html">Home</a><span class="breadcrumb-sep">›</span>
+      <a href="#">Financial</a><span class="breadcrumb-sep">›</span>
+      <span>Mortgage Calculator</span>
+    </nav>
+
+    <div class="page-header">
+      <div class="page-header__eyebrow">Financial</div>
+      <h1 class="page-header__title">🏠 Mortgage Calculator</h1>
+      <p class="page-header__desc">Calculate your monthly payment, total interest paid, and view a full amortization schedule for your home loan.</p>
+    </div>
+
+    <div class="calc-layout">
+      <!-- Input Panel -->
+      <div class="calculator-card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 24px;">
+          <div>
+            <h2 class="calc-title" style="margin-bottom:0">Loan Details</h2>
+            <p class="calc-desc" style="margin-bottom:0; margin-top:8px">Enter your mortgage information below.</p>
+          </div>
+          <div id="currencySelectorContainer"></div>
+        </div>
+
+        <div class="input-group has-prefix">
+          <label for="homePrice">Home Price</label>
+          <span class="input-prefix currency">$</span>
+          <input type="number" id="homePrice" class="mui-input" value="300000" min="0" step="1000" aria-label="Home price">
+        </div>
+        <div class="input-group has-prefix">
+          <label for="downPayment">Down Payment</label>
+          <span class="input-prefix currency">$</span>
+          <input type="number" id="downPayment" class="mui-input" value="60000" min="0" step="1000" aria-label="Down payment">
+        </div>
+        <div class="input-group has-suffix">
+          <label for="interestRate">Annual Interest Rate</label>
+          <input type="number" id="interestRate" class="mui-input" value="6.5" min="0" max="30" step="0.05" aria-label="Annual interest rate">
+          <span class="input-suffix">%</span>
+        </div>
+        <div class="input-group has-suffix">
+          <label for="loanTerm">Loan Term</label>
+          <input type="number" id="loanTerm" class="mui-input" value="30" min="1" max="100" aria-label="Loan term">
+          <span class="input-suffix">Years</span>
+        </div>
+        <div class="form-row">
+          <div class="input-group has-prefix">
+            <label for="propTax">Property Tax / yr</label>
+            <span class="input-prefix currency">$</span>
+            <input type="number" id="propTax" class="mui-input" value="3600" min="0" aria-label="Annual property tax">
+          </div>
+          <div class="input-group has-prefix">
+            <label for="homeIns">Home Insurance / yr</label>
+            <span class="input-prefix currency">$</span>
+            <input type="number" id="homeIns" class="mui-input" value="1200" min="0" aria-label="Annual home insurance">
+          </div>
+        </div>
+        <button class="btn btn-primary btn-block btn-lg" id="calcBtn" onclick="calculateMortgage()">Calculate</button>
+      </div>
+
+      <!-- Results Panel -->
+      <div>
+        <div class="calculator-card" id="resultsPanel" style="display:none">
+          <h2 class="calc-title">Results</h2>
+          <div class="summary-cards">
+            <div class="summary-card">
+              <div class="summary-card__label">Monthly Payment</div>
+              <div class="summary-card__value primary" id="monthlyPayment">—</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-card__label">Loan Amount</div>
+              <div class="summary-card__value" id="loanAmount">—</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-card__label">Total Interest</div>
+              <div class="summary-card__value accent" id="totalInterest">—</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-card__label">Total Cost</div>
+              <div class="summary-card__value" id="totalCost">—</div>
+            </div>
+            <div class="summary-card" style="grid-column:span 2">
+              <div class="summary-card__label">Full Monthly (w/ Tax & Ins)</div>
+              <div class="summary-card__value primary" id="fullMonthly">—</div>
+            </div>
+          </div>
+
+          <!-- Pi chart bar -->
+          <div style="margin-top:24px">
+            <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--text-secondary);margin-bottom:6px">
+              <span>Principal</span><span id="principalPct">—</span>
+            </div>
+            <div class="progress-bar"><div class="progress-bar__fill" id="principalBar" style="width:0%;background:linear-gradient(90deg,var(--primary),var(--primary-light))"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--text-secondary);margin-bottom:6px;margin-top:12px">
+              <span>Interest</span><span id="interestPct">—</span>
+            </div>
+            <div class="progress-bar"><div class="progress-bar__fill" id="interestBar" style="width:0%;background:linear-gradient(90deg,var(--accent),#ff9e80)"></div></div>
+          </div>
+
+          <!-- Amortization table -->
+          <div class="divider"></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <h3 style="font-size:1rem">Amortization Schedule</h3>
+            <select id="amortView" class="mui-select" style="width:auto;padding:6px 30px 6px 12px;font-size:0.8rem" onchange="renderTable()">
+              <option value="monthly">Monthly</option>
+              <option value="yearly">Yearly</option>
+            </select>
+          </div>
+          <div style="overflow-x:auto;max-height:360px;overflow-y:auto">
+            <table class="results-table" id="amortTable">
+              <thead><tr><th>#</th><th>Payment</th><th>Principal</th><th>Interest</th><th>Balance</th></tr></thead>
+              <tbody id="amortBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="alert alert-info animate-in" style="margin-top:16px">
+          ℹ️ Property tax and insurance are estimates. Consult a lender for exact figures.
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="/js/ui.js"></script>
+<script>
+  let schedule = [];
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (window.CalculatorEse && window.CalculatorEse.buildCurrencySelector) {
+      window.CalculatorEse.buildCurrencySelector('currencySelectorContainer', () => {
+        if (document.getElementById('resultsPanel').style.display !== 'none') {
+          calculateMortgage();
+        }
+      });
+    }
+  });
+
+  function calculateMortgage() {
+    const home = parseFloat(document.getElementById('homePrice').value) || 0;
+    const down = parseFloat(document.getElementById('downPayment').value) || 0;
+    const rate = parseFloat(document.getElementById('interestRate').value) / 100 / 12;
+    const term = parseInt(document.getElementById('loanTerm').value) * 12;
+    const tax  = parseFloat(document.getElementById('propTax').value) || 0;
+    const ins  = parseFloat(document.getElementById('homeIns').value) || 0;
+
+    const principal = home - down;
+    if (principal <= 0 || rate <= 0 || term <= 0) return;
+
+    const monthly = principal * (rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1);
+    const totalPaid = monthly * term;
+    const totalInterest = totalPaid - principal;
+    const fullMonthly = monthly + (tax / 12) + (ins / 12);
+
+    document.getElementById('monthlyPayment').textContent = CalculatorEse.fmtCurrency(monthly);
+    document.getElementById('loanAmount').textContent = CalculatorEse.fmtCurrency(principal);
+    document.getElementById('totalInterest').textContent = CalculatorEse.fmtCurrency(totalInterest);
+    document.getElementById('totalCost').textContent = CalculatorEse.fmtCurrency(totalPaid + down);
+    document.getElementById('fullMonthly').textContent = CalculatorEse.fmtCurrency(fullMonthly);
+
+    const pPct = (principal / (principal + totalInterest)) * 100;
+    const iPct = 100 - pPct;
+    document.getElementById('principalPct').textContent = CalculatorEse.fmtPercent(pPct);
+    document.getElementById('interestPct').textContent = CalculatorEse.fmtPercent(iPct);
+    setTimeout(() => {
+      document.getElementById('principalBar').style.width = pPct + '%';
+      document.getElementById('interestBar').style.width = iPct + '%';
+    }, 50);
+
+    // Build schedule
+    schedule = [];
+    let balance = principal;
+    for (let i = 1; i <= term; i++) {
+      const interest = balance * rate;
+      const princ = monthly - interest;
+      balance -= princ;
+      schedule.push({ month: i, payment: monthly, principal: princ, interest, balance: Math.max(balance, 0) });
+    }
+
+    document.getElementById('resultsPanel').style.display = 'block';
+    renderTable();
+    document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function renderTable() {
+    const view = document.getElementById('amortView').value;
+    const tbody = document.getElementById('amortBody');
+    tbody.innerHTML = '';
+
+    if (view === 'yearly') {
+      const years = {};
+      schedule.forEach(r => {
+        const yr = Math.ceil(r.month / 12);
+        if (!years[yr]) years[yr] = { year: yr, payment: 0, principal: 0, interest: 0, balance: 0 };
+        years[yr].payment += r.payment;
+        years[yr].principal += r.principal;
+        years[yr].interest += r.interest;
+        years[yr].balance = r.balance;
+      });
+      Object.values(years).forEach(r => {
+        tbody.innerHTML += `<tr><td>Year ${r.year}</td><td>${CalculatorEse.fmtCurrency(r.payment)}</td><td>${CalculatorEse.fmtCurrency(r.principal)}</td><td>${CalculatorEse.fmtCurrency(r.interest)}</td><td>${CalculatorEse.fmtCurrency(r.balance)}</td></tr>`;
+      });
+    } else {
+      schedule.forEach(r => {
+        tbody.innerHTML += `<tr><td>${r.month}</td><td>${CalculatorEse.fmtCurrency(r.payment)}</td><td>${CalculatorEse.fmtCurrency(r.principal)}</td><td>${CalculatorEse.fmtCurrency(r.interest)}</td><td>${CalculatorEse.fmtCurrency(r.balance)}</td></tr>`;
+      });
+    }
+  }
+
+  window.addEventListener('load', calculateMortgage);
+</script>
+</body>
+</html>
+

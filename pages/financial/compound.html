@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compound Interest Calculator – Savings Growth | CalculatorEse</title>
+  <meta name="description" content="Calculate compound interest with monthly contributions. See how your savings grow with the power of compounding over time.">
+  <meta name="keywords" content="compound interest calculator, savings calculator, investment growth, monthly contribution, future value">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://calculatorese.io/pages/financial/compound.html">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/mobile.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+<div class="app-shell">
+<main class="main-content" id="main" role="main">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/index.html">Home</a><span class="breadcrumb-sep">›</span><span>Financial</span><span class="breadcrumb-sep">›</span><span>Compound Interest Calculator</span></nav>
+  <div class="page-header">
+    <div class="page-header__eyebrow">Financial</div>
+    <h1 class="page-header__title">💰 Compound Interest Calculator</h1>
+    <p class="page-header__desc">See the power of compounding. Add regular contributions and watch your wealth grow exponentially over time.</p>
+  </div>
+
+  <div class="calc-layout">
+    <div class="calculator-card">
+      <h2 class="calc-title">Savings Details</h2>
+      <p class="calc-desc">Enter your investment parameters below.</p>
+      <div class="input-group has-prefix"><label for="c_initial">Initial Investment</label><span class="input-prefix currency">$</span><input type="number" id="c_initial" class="mui-input" value="5000" min="0"></div>
+      <div class="input-group has-prefix"><label for="c_monthly">Monthly Contribution</label><span class="input-prefix currency">$</span><input type="number" id="c_monthly" class="mui-input" value="200" min="0"></div>
+      <div class="input-group has-suffix"><label for="c_rate">Annual Interest Rate</label><input type="number" id="c_rate" class="mui-input" value="8" min="0" step="0.1"><span class="input-suffix">%</span></div>
+      <div class="input-group"><label for="c_years">Investment Period</label><input type="number" id="c_years" class="mui-input" value="20" min="1"></div>
+      <div class="input-group"><label for="c_freq">Compounding Frequency</label>
+        <select id="c_freq" class="mui-select">
+          <option value="365">Daily</option>
+          <option value="12" selected>Monthly</option>
+          <option value="4">Quarterly</option>
+          <option value="1">Annually</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-block btn-lg" onclick="calcCompoundAdv()">Calculate</button>
+    </div>
+
+    <div>
+      <div class="calculator-card" id="compResult" style="display:none">
+        <h2 class="calc-title">Results</h2>
+        <div class="summary-cards" style="margin-bottom:20px">
+          <div class="summary-card"><div class="summary-card__label">Future Value</div><div class="summary-card__value primary" id="cr_fv">—</div></div>
+          <div class="summary-card"><div class="summary-card__label">Total Contributions</div><div class="summary-card__value" id="cr_contrib">—</div></div>
+          <div class="summary-card"><div class="summary-card__label">Total Interest</div><div class="summary-card__value accent" id="cr_int">—</div></div>
+          <div class="summary-card"><div class="summary-card__label">Effective APY</div><div class="summary-card__value" id="cr_apy">—</div></div>
+        </div>
+
+        <div style="margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px"><span>Contributions</span><span id="cr_contribPct">—</span></div>
+          <div class="progress-bar"><div class="progress-bar__fill" id="cr_contribBar" style="background:linear-gradient(90deg,var(--primary),var(--primary-light))"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px;margin-top:8px"><span>Interest Growth</span><span id="cr_intPct">—</span></div>
+          <div class="progress-bar"><div class="progress-bar__fill" id="cr_intBar" style="background:linear-gradient(90deg,var(--secondary),var(--secondary-light))"></div></div>
+        </div>
+
+        <h3 style="font-size:1rem;margin-bottom:12px">Year-by-Year Breakdown</h3>
+        <div style="overflow-y:auto;max-height:320px">
+          <table class="results-table">
+            <thead><tr><th>Year</th><th>Balance</th><th>Contributions</th><th>Interest</th></tr></thead>
+            <tbody id="comp_table"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</div>
+<script src="/js/ui.js"></script>
+<script>
+  function calcCompoundAdv() {
+    const P  = parseFloat(document.getElementById('c_initial').value) || 0;
+    const m  = parseFloat(document.getElementById('c_monthly').value) || 0;
+    const r  = parseFloat(document.getElementById('c_rate').value) / 100;
+    const t  = parseInt(document.getElementById('c_years').value);
+    const n  = parseInt(document.getElementById('c_freq').value);
+    const rn = r / n;
+    const monthlyN = n / 12; // compounds per month
+
+    let balance = P;
+    let totalContrib = P;
+    let rows = '';
+
+    for (let y = 1; y <= t; y++) {
+      const yearStart = balance;
+      for (let mo = 0; mo < 12; mo++) {
+        balance += m;
+        totalContrib += m;
+        for (let c = 0; c < monthlyN; c++) {
+          balance *= (1 + rn);
+        }
+      }
+      rows += `<tr><td>${y}</td><td>${CalculatorEse.fmtCurrency(balance)}</td><td>${CalculatorEse.fmtCurrency(totalContrib)}</td><td>${CalculatorEse.fmtCurrency(balance - totalContrib)}</td></tr>`;
+    }
+
+    const totalInt = balance - totalContrib;
+    const apy = (Math.pow(1 + r / n, n) - 1) * 100;
+
+    document.getElementById('cr_fv').textContent = CalculatorEse.fmtCurrency(balance);
+    document.getElementById('cr_contrib').textContent = CalculatorEse.fmtCurrency(totalContrib);
+    document.getElementById('cr_int').textContent = CalculatorEse.fmtCurrency(totalInt);
+    document.getElementById('cr_apy').textContent = CalculatorEse.fmtPercent(apy, 3);
+
+    const cPct = (totalContrib / balance) * 100;
+    const iPct = (totalInt / balance) * 100;
+    document.getElementById('cr_contribPct').textContent = CalculatorEse.fmtPercent(cPct);
+    document.getElementById('cr_intPct').textContent = CalculatorEse.fmtPercent(iPct);
+    setTimeout(() => {
+      document.getElementById('cr_contribBar').style.width = cPct + '%';
+      document.getElementById('cr_intBar').style.width = iPct + '%';
+    }, 50);
+
+    document.getElementById('comp_table').innerHTML = rows;
+    document.getElementById('compResult').style.display = 'block';
+  }
+
+  window.addEventListener('load', calcCompoundAdv);
+</script>
+</body>
+</html>
+

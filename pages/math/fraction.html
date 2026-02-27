@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fraction Calculator – Add Subtract Multiply Divide Fractions | CalculatorEse</title>
+  <meta name="description" content="Free fraction calculator. Add, subtract, multiply, and divide fractions. See step-by-step solutions and simplified answers.">
+  <meta name="keywords" content="fraction calculator, add fractions, subtract fractions, multiply fractions, divide fractions, simplify fractions">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://calculatorese.io/pages/math/fraction.html">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/mobile.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>½</text></svg>">
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+<div class="app-shell">
+<main class="main-content" id="main" role="main">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/index.html">Home</a><span class="breadcrumb-sep">›</span><span>Math</span><span class="breadcrumb-sep">›</span><span>Fraction Calculator</span></nav>
+  <div class="page-header">
+    <div class="page-header__eyebrow">Math</div>
+    <h1 class="page-header__title">½ Fraction Calculator</h1>
+    <p class="page-header__desc">Perform arithmetic on fractions and mixed numbers. Get simplified results and step-by-step solutions.</p>
+  </div>
+
+  <div class="calc-layout">
+    <div class="calculator-card">
+      <h2 class="calc-title">Fraction Arithmetic</h2>
+      <p class="calc-desc">Enter numerators and denominators, then choose an operation.</p>
+
+      <!-- Fraction 1 -->
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+        <div style="flex:1">
+          <div class="input-group" style="margin-bottom:8px"><label>Numerator 1</label><input type="number" id="f_n1" class="mui-input" value="3"></div>
+          <div class="divider" style="margin:4px 0"></div>
+          <div class="input-group" style="margin-top:8px"><label>Denominator 1</label><input type="number" id="f_d1" class="mui-input" value="4"></div>
+        </div>
+        <div>
+          <select id="f_op" class="mui-select" style="width:auto;padding:10px 36px 10px 12px;font-size:1.2rem;font-weight:700">
+            <option value="add">+</option>
+            <option value="sub">−</option>
+            <option value="mul">×</option>
+            <option value="div">÷</option>
+          </select>
+        </div>
+        <div style="flex:1">
+          <div class="input-group" style="margin-bottom:8px"><label>Numerator 2</label><input type="number" id="f_n2" class="mui-input" value="2"></div>
+          <div class="divider" style="margin:4px 0"></div>
+          <div class="input-group" style="margin-top:8px"><label>Denominator 2</label><input type="number" id="f_d2" class="mui-input" value="3"></div>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-block btn-lg" onclick="calcFraction()">Calculate</button>
+
+      <div id="fr_result" class="result-box" style="display:none">
+        <div class="result-box__label">Result (Simplified)</div>
+        <div style="display:flex;align-items:center;gap:20px;margin:8px 0">
+          <div style="text-align:center">
+            <div id="fr_num" style="font-size:2rem;font-weight:800;color:var(--primary-light);font-family:var(--font-mono)">—</div>
+            <div style="height:2px;background:var(--primary-light);margin:4px 0"></div>
+            <div id="fr_den" style="font-size:2rem;font-weight:800;color:var(--primary-light);font-family:var(--font-mono)">—</div>
+          </div>
+          <div style="color:var(--text-secondary)">=</div>
+          <div id="fr_decimal" style="font-size:1.5rem;font-weight:700;font-family:var(--font-mono);color:var(--text-primary)">—</div>
+          <div id="fr_mixed" style="font-size:1.1rem;color:var(--text-secondary)"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="calculator-card">
+      <h2 class="calc-title">Step-by-Step</h2>
+      <div id="fr_steps" style="color:var(--text-secondary);font-size:0.875rem">
+        <p style="color:var(--text-disabled)">Steps will appear here after calculation…</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Simplify a fraction -->
+  <div class="card" style="margin-top:24px;max-width:520px">
+    <h3 style="margin-bottom:16px">Simplify a Fraction</h3>
+    <div class="form-row">
+      <div class="input-group"><label>Numerator</label><input type="number" id="s_n" class="mui-input" value="24"></div>
+      <div class="input-group"><label>Denominator</label><input type="number" id="s_d" class="mui-input" value="36"></div>
+    </div>
+    <button class="btn btn-outlined" onclick="simplify()">Simplify</button>
+    <div id="s_result" class="result-box" style="display:none">
+      <div class="result-box__label">Simplified Form</div>
+      <div class="result-box__value" id="s_v">—</div>
+    </div>
+  </div>
+</main>
+</div>
+<script src="/js/ui.js"></script>
+<script>
+  function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while(b) { [a,b]=[b,a%b]; } return a; }
+  function lcm(a, b) { return Math.abs(a * b) / gcd(a, b); }
+  function reduce(n, d) { if (d === 0) return [n, d]; const g = gcd(Math.abs(n), Math.abs(d)); const sign = d < 0 ? -1 : 1; return [sign * n / g, Math.abs(d) / g]; }
+
+  function calcFraction() {
+    const n1 = parseInt(document.getElementById('f_n1').value);
+    const d1 = parseInt(document.getElementById('f_d1').value);
+    const n2 = parseInt(document.getElementById('f_n2').value);
+    const d2 = parseInt(document.getElementById('f_d2').value);
+    const op = document.getElementById('f_op').value;
+
+    let rn, rd, steps = '';
+    const opSym = {add:'+',sub:'−',mul:'×',div:'÷'};
+
+    if (op === 'add' || op === 'sub') {
+      const l = lcm(d1, d2);
+      const nn1 = n1 * (l / d1), nn2 = n2 * (l / d2);
+      rn = op === 'add' ? nn1 + nn2 : nn1 - nn2;
+      rd = l;
+      steps = `<b>Step 1:</b> Find LCD of ${d1} and ${d2} = <b>${l}</b><br>
+               <b>Step 2:</b> Convert: ${n1}/${d1} = ${nn1}/${l}, ${n2}/${d2} = ${nn2}/${l}<br>
+               <b>Step 3:</b> ${op==='add'?'Add':'Subtract'}: ${nn1} ${opSym[op]} ${nn2} = ${rn}<br>
+               <b>Result:</b> ${rn}/${rd}`;
+    } else if (op === 'mul') {
+      rn = n1 * n2; rd = d1 * d2;
+      steps = `<b>Step 1:</b> Multiply numerators: ${n1} × ${n2} = <b>${rn}</b><br>
+               <b>Step 2:</b> Multiply denominators: ${d1} × ${d2} = <b>${rd}</b><br>
+               <b>Result:</b> ${rn}/${rd}`;
+    } else {
+      rn = n1 * d2; rd = d1 * n2;
+      steps = `<b>Step 1:</b> Flip second fraction: ${n2}/${d2} → ${d2}/${n2}<br>
+               <b>Step 2:</b> Multiply: ${n1}/${d1} × ${d2}/${n2}<br>
+               <b>Step 3:</b> ${n1}×${d2} = ${n1*d2}, ${d1}×${n2} = ${d1*n2}<br>
+               <b>Result:</b> ${rn}/${rd}`;
+    }
+
+    const [sn, sd] = reduce(rn, rd);
+    const decimal = sn / sd;
+    const whole = Math.floor(Math.abs(sn) / sd);
+    const remN = Math.abs(sn) % sd;
+    const mixed = whole > 0 && remN > 0 ? `${sn < 0 ? '−' : ''}${whole} ${remN}/${sd}` : '';
+    const [origN, origD] = reduce(rn, rd);
+    if (origN !== sn) steps += `<br><b>Simplified:</b> ${rn}/${rd} = ${sn}/${sd}`;
+
+    document.getElementById('fr_num').textContent = sn;
+    document.getElementById('fr_den').textContent = sd;
+    document.getElementById('fr_decimal').textContent = parseFloat(decimal.toFixed(6));
+    document.getElementById('fr_mixed').textContent = mixed;
+    document.getElementById('fr_result').style.display = 'block';
+    document.getElementById('fr_steps').innerHTML = steps;
+  }
+
+  function simplify() {
+    const n = parseInt(document.getElementById('s_n').value);
+    const d = parseInt(document.getElementById('s_d').value);
+    const [sn, sd] = reduce(n, d);
+    document.getElementById('s_v').textContent = `${sn} / ${sd} = ${(sn/sd).toFixed(6)}`;
+    document.getElementById('s_result').style.display = 'block';
+  }
+</script>
+</body>
+</html>
+

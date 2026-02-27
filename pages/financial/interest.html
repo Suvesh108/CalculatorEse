@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interest Calculator – Simple & Compound Interest | CalculatorEse</title>
+  <meta name="description" content="Free interest calculator. Compute simple interest or compound interest on savings, loans, or investments with annual, monthly, daily compounding.">
+  <meta name="keywords" content="interest calculator, simple interest, compound interest, APY, savings interest">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://calculatorese.io/pages/financial/interest.html">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/mobile.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📈</text></svg>">
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+<div class="app-shell">
+<main class="main-content" id="main" role="main">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/index.html">Home</a><span class="breadcrumb-sep">›</span><span>Financial</span><span class="breadcrumb-sep">›</span><span>Interest Calculator</span></nav>
+  <div class="page-header">
+    <div class="page-header__eyebrow">Financial</div>
+    <h1 class="page-header__title">📈 Interest Calculator</h1>
+    <p class="page-header__desc">Compute simple or compound interest on any principal amount over any time period.</p>
+  </div>
+
+  <div data-tabs>
+    <div class="tabs">
+      <button class="tab-btn">Simple Interest</button>
+      <button class="tab-btn">Compound Interest</button>
+    </div>
+
+    <!-- Simple -->
+    <div class="tab-panel">
+      <div class="calc-layout">
+        <div class="calculator-card">
+          <h2 class="calc-title">Simple Interest</h2>
+          <p class="calc-desc">I = P × r × t</p>
+          <div class="input-group has-prefix"><label for="si_p">Principal Amount</label><span class="input-prefix currency">$</span><input type="number" id="si_p" class="mui-input" value="10000" min="0"></div>
+          <div class="input-group has-suffix"><label for="si_r">Annual Interest Rate</label><input type="number" id="si_r" class="mui-input" value="5" min="0" step="0.1"><span class="input-suffix">%</span></div>
+          <div class="input-group"><label for="si_t">Time Period (years)</label><input type="number" id="si_t" class="mui-input" value="3" min="0" step="0.5"></div>
+          <button class="btn btn-primary btn-block btn-lg" onclick="calcSimple()">Calculate</button>
+          <div id="si_result" class="result-box" style="display:none">
+            <div class="summary-cards">
+              <div class="summary-card"><div class="summary-card__label">Interest Earned</div><div class="summary-card__value primary" id="si_interest">—</div></div>
+              <div class="summary-card"><div class="summary-card__label">Total Amount</div><div class="summary-card__value" id="si_total">—</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="calculator-card" style="display:flex;align-items:center;justify-content:center;min-height:200px">
+          <div style="text-align:center">
+            <div style="font-size:3rem;margin-bottom:16px">🧮</div>
+            <div style="font-family:var(--font-mono);font-size:1.2rem;color:var(--primary-light)">I = P × r × t</div>
+            <div style="color:var(--text-secondary);font-size:0.875rem;margin-top:8px">Principal × Rate × Time</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Compound -->
+    <div class="tab-panel">
+      <div class="calc-layout">
+        <div class="calculator-card">
+          <h2 class="calc-title">Compound Interest</h2>
+          <p class="calc-desc">A = P(1 + r/n)^(nt)</p>
+          <div class="input-group has-prefix"><label for="ci_p">Principal Amount</label><span class="input-prefix currency">$</span><input type="number" id="ci_p" class="mui-input" value="10000" min="0"></div>
+          <div class="input-group has-suffix"><label for="ci_r">Annual Interest Rate</label><input type="number" id="ci_r" class="mui-input" value="6" min="0" step="0.1"><span class="input-suffix">%</span></div>
+          <div class="input-group"><label for="ci_t">Time Period (years)</label><input type="number" id="ci_t" class="mui-input" value="5" min="0"></div>
+          <div class="input-group"><label for="ci_n">Compound Frequency</label>
+            <select id="ci_n" class="mui-select">
+              <option value="365">Daily (365×/yr)</option>
+              <option value="12" selected>Monthly (12×/yr)</option>
+              <option value="4">Quarterly (4×/yr)</option>
+              <option value="2">Semi-Annually (2×/yr)</option>
+              <option value="1">Annually (1×/yr)</option>
+            </select>
+          </div>
+          <button class="btn btn-primary btn-block btn-lg" onclick="calcCompound()">Calculate</button>
+          <div id="ci_result" class="result-box" style="display:none">
+            <div class="summary-cards">
+              <div class="summary-card"><div class="summary-card__label">Total Amount</div><div class="summary-card__value primary" id="ci_total">—</div></div>
+              <div class="summary-card"><div class="summary-card__label">Interest Earned</div><div class="summary-card__value accent" id="ci_interest">—</div></div>
+              <div class="summary-card"><div class="summary-card__label">Effective APY</div><div class="summary-card__value" id="ci_apy">—</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="calculator-card">
+          <h3 style="margin-bottom:16px">Year-by-Year Growth</h3>
+          <div style="overflow-y:auto;max-height:360px">
+            <table class="results-table"><thead><tr><th>Year</th><th>Balance</th><th>Interest</th></tr></thead>
+            <tbody id="ci_table"></tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</div>
+<script src="/js/ui.js"></script>
+<script>
+  function calcSimple() {
+    const p = parseFloat(document.getElementById('si_p').value);
+    const r = parseFloat(document.getElementById('si_r').value) / 100;
+    const t = parseFloat(document.getElementById('si_t').value);
+    const I = p * r * t;
+    document.getElementById('si_interest').textContent = CalculatorEse.fmtCurrency(I);
+    document.getElementById('si_total').textContent = CalculatorEse.fmtCurrency(p + I);
+    document.getElementById('si_result').style.display = 'block';
+  }
+
+  function calcCompound() {
+    const p = parseFloat(document.getElementById('ci_p').value);
+    const r = parseFloat(document.getElementById('ci_r').value) / 100;
+    const t = parseInt(document.getElementById('ci_t').value);
+    const n = parseInt(document.getElementById('ci_n').value);
+    const A = p * Math.pow(1 + r / n, n * t);
+    const apy = (Math.pow(1 + r / n, n) - 1) * 100;
+    document.getElementById('ci_total').textContent = CalculatorEse.fmtCurrency(A);
+    document.getElementById('ci_interest').textContent = CalculatorEse.fmtCurrency(A - p);
+    document.getElementById('ci_apy').textContent = CalculatorEse.fmtPercent(apy, 3);
+    document.getElementById('ci_result').style.display = 'block';
+    let rows = '';
+    for (let y = 1; y <= t; y++) {
+      const bal = p * Math.pow(1 + r / n, n * y);
+      rows += `<tr><td>${y}</td><td>${CalculatorEse.fmtCurrency(bal)}</td><td>${CalculatorEse.fmtCurrency(bal - p)}</td></tr>`;
+    }
+    document.getElementById('ci_table').innerHTML = rows;
+  }
+</script>
+</body>
+</html>
+

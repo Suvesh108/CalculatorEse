@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calorie Calculator – Daily Caloric Needs (TDEE) | CalculatorEse</title>
+  <meta name="description" content="Free calorie calculator. Find your Total Daily Energy Expenditure (TDEE) and daily calorie needs based on age, gender, height, weight, and activity level.">
+  <meta name="keywords" content="calorie calculator, TDEE, daily calories, weight loss calories, calorie intake, caloric deficit">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://calculatorese.io/pages/health/calorie.html">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/mobile.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥗</text></svg>">
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+<div class="app-shell">
+<main class="main-content" id="main" role="main">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/index.html">Home</a><span class="breadcrumb-sep">›</span><span>Health</span><span class="breadcrumb-sep">›</span><span>Calorie Calculator</span></nav>
+  <div class="page-header">
+    <div class="page-header__eyebrow">Health</div>
+    <h1 class="page-header__title">🥗 Calorie Calculator</h1>
+    <p class="page-header__desc">Calculate your Total Daily Energy Expenditure (TDEE) and personalized calorie goals for weight loss, maintenance, or muscle gain.</p>
+  </div>
+
+  <div class="calc-layout">
+    <div class="calculator-card">
+      <h2 class="calc-title">Your Profile</h2>
+      <div class="form-row">
+        <div class="input-group"><label for="cal_age">Age</label><input type="number" id="cal_age" class="mui-input" value="28" min="15" max="100"></div>
+        <div class="input-group"><label for="cal_sex">Sex</label><select id="cal_sex" class="mui-select"><option value="male">Male</option><option value="female">Female</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="input-group has-suffix"><label for="cal_cm">Height</label><input type="number" id="cal_cm" class="mui-input" value="175" min="50" max="300"><span class="input-suffix">cm</span></div>
+        <div class="input-group has-suffix"><label for="cal_kg">Weight</label><input type="number" id="cal_kg" class="mui-input" value="75" min="10" max="500"><span class="input-suffix">kg</span></div>
+      </div>
+      <div class="input-group"><label for="cal_activity">Activity Level</label>
+        <select id="cal_activity" class="mui-select">
+          <option value="1.2">Sedentary (desk job, no exercise)</option>
+          <option value="1.375">Lightly Active (1-3 days/wk)</option>
+          <option value="1.55" selected>Moderately Active (3-5 days/wk)</option>
+          <option value="1.725">Very Active (6-7 days/wk)</option>
+          <option value="1.9">Extra Active (physical job + training)</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-block btn-lg" onclick="calcCalorie()">Calculate Daily Calories</button>
+    </div>
+
+    <div class="calculator-card" id="calResult" style="display:none">
+      <h2 class="calc-title">Your Calorie Goals</h2>
+      <div class="result-box" style="margin-bottom:20px">
+        <div class="result-box__label">Maintenance Calories (TDEE)</div>
+        <div class="result-box__value" id="cal_tdee">—</div>
+        <div class="result-box__sub">Total Daily Energy Expenditure</div>
+      </div>
+      <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:12px;color:var(--text-secondary)">CALORIE GOALS BY OBJECTIVE</h3>
+      <table class="results-table">
+        <thead><tr><th>Goal</th><th>Daily Calories</th><th>Weekly Change</th></tr></thead>
+        <tbody>
+          <tr><td>Extreme Weight Loss</td><td id="c_ext_loss" style="color:var(--error)">—</td><td>-2 lbs</td></tr>
+          <tr><td>Weight Loss</td><td id="c_loss" style="color:var(--warning)">—</td><td>-1 lb</td></tr>
+          <tr><td>Mild Weight Loss</td><td id="c_mild_loss" style="color:#ffb74d">—</td><td>-0.5 lbs</td></tr>
+          <tr><td>Maintenance</td><td id="c_maint" style="color:var(--secondary)">—</td><td>0 lbs</td></tr>
+          <tr><td>Mild Weight Gain</td><td id="c_mild_gain" style="color:#a5d6a7">—</td><td>+0.5 lbs</td></tr>
+          <tr><td>Weight Gain</td><td id="c_gain" style="color:var(--success)">—</td><td>+1 lb</td></tr>
+          <tr><td>Fast Weight Gain</td><td id="c_fast_gain" style="color:var(--primary-light)">—</td><td>+2 lbs</td></tr>
+        </tbody>
+      </table>
+      <div class="divider"></div>
+      <div class="summary-cards">
+        <div class="summary-card"><div class="summary-card__label">BMR (at rest)</div><div class="summary-card__value" id="cal_bmr">—</div></div>
+        <div class="summary-card"><div class="summary-card__label">Protein Goal</div><div class="summary-card__value" id="cal_protein">—</div></div>
+      </div>
+    </div>
+  </div>
+</main>
+</div>
+<script src="/js/ui.js"></script>
+<script>
+  function calcCalorie() {
+    const age      = parseFloat(document.getElementById('cal_age').value);
+    const sex      = document.getElementById('cal_sex').value;
+    const cm       = parseFloat(document.getElementById('cal_cm').value);
+    const kg       = parseFloat(document.getElementById('cal_kg').value);
+    const activity = parseFloat(document.getElementById('cal_activity').value);
+
+    // Mifflin-St Jeor BMR
+    let bmr = (10 * kg) + (6.25 * cm) - (5 * age) + (sex === 'male' ? 5 : -161);
+    const tdee = bmr * activity;
+    const cals_per_lb = 3500;
+
+    document.getElementById('cal_tdee').textContent = `${Math.round(tdee)} kcal/day`;
+    document.getElementById('cal_bmr').textContent = `${Math.round(bmr)} kcal`;
+    document.getElementById('cal_protein').textContent = `${Math.round(kg * 2.2 * 0.8)}g/day`;
+
+    document.getElementById('c_ext_loss').textContent =  `${Math.round(tdee - 1000)} kcal`;
+    document.getElementById('c_loss').textContent =      `${Math.round(tdee - 500)} kcal`;
+    document.getElementById('c_mild_loss').textContent = `${Math.round(tdee - 250)} kcal`;
+    document.getElementById('c_maint').textContent =     `${Math.round(tdee)} kcal`;
+    document.getElementById('c_mild_gain').textContent = `${Math.round(tdee + 250)} kcal`;
+    document.getElementById('c_gain').textContent =      `${Math.round(tdee + 500)} kcal`;
+    document.getElementById('c_fast_gain').textContent = `${Math.round(tdee + 1000)} kcal`;
+
+    document.getElementById('calResult').style.display = 'block';
+  }
+  window.addEventListener('load', calcCalorie);
+</script>
+</body>
+</html>
+

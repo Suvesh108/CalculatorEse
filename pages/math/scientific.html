@@ -1,0 +1,196 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scientific Calculator – Full Function Calculator | CalculatorEse</title>
+  <meta name="description" content="Free online scientific calculator with trigonometric, logarithmic, exponential, and advanced math functions. Keyboard support included.">
+  <meta name="keywords" content="scientific calculator, online calculator, trig calculator, sin cos tan, logarithm, exponent, advanced calculator">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://calculatorese.io/pages/math/scientific.html">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/mobile.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔬</text></svg>">
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+<div class="app-shell">
+<main class="main-content" id="main" role="main">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/index.html">Home</a><span class="breadcrumb-sep">›</span><span>Math</span><span class="breadcrumb-sep">›</span><span>Scientific Calculator</span></nav>
+  <div class="page-header">
+    <div class="page-header__eyebrow">Math</div>
+    <h1 class="page-header__title">🔬 Scientific Calculator</h1>
+    <p class="page-header__desc">Full-featured scientific calculator with trigonometric, logarithmic, and exponential functions. Supports keyboard input.</p>
+  </div>
+
+  <div style="max-width:500px">
+    <div class="calculator-card">
+      <!-- Display -->
+      <div class="sci-display" id="sciDisplay">
+        <div class="sci-display__expr" id="sciExpr"></div>
+        <div class="sci-display__value" id="sciVal">0</div>
+      </div>
+
+      <!-- Mode Toggle -->
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <button class="tab-btn active" id="degBtn" onclick="setAngleMode('deg')" style="flex:none;padding:6px 16px">DEG</button>
+        <button class="tab-btn" id="radBtn" onclick="setAngleMode('rad')" style="flex:none;padding:6px 16px">RAD</button>
+        <div style="flex:1"></div>
+        <button class="tab-btn" id="invBtn" onclick="toggleInv()" style="flex:none;padding:6px 16px">INV</button>
+      </div>
+
+      <!-- Buttons -->
+      <div class="sci-grid">
+        <!-- Row 1: Functions -->
+        <button class="sci-btn fn" onclick="pressFn('sin')"   id="btn_sin">sin</button>
+        <button class="sci-btn fn" onclick="pressFn('cos')"   id="btn_cos">cos</button>
+        <button class="sci-btn fn" onclick="pressFn('tan')"   id="btn_tan">tan</button>
+        <button class="sci-btn fn" onclick="pressFn('log')"   id="btn_log">log</button>
+        <button class="sci-btn fn" onclick="pressFn('ln')"    id="btn_ln">ln</button>
+        <!-- Row 2 -->
+        <button class="sci-btn fn" onclick="pressStr('Math.PI')">π</button>
+        <button class="sci-btn fn" onclick="pressStr('Math.E')">e</button>
+        <button class="sci-btn fn" onclick="pressFn('sqrt')">√</button>
+        <button class="sci-btn op" onclick="pressStr('^')">xʸ</button>
+        <button class="sci-btn fn" onclick="pressFn('abs')">|x|</button>
+        <!-- Row 3: AC/CE/Brackets/% -->
+        <button class="sci-btn clear" onclick="pressAC()">AC</button>
+        <button class="sci-btn clear" onclick="pressDel()">⌫</button>
+        <button class="sci-btn op" onclick="pressStr('(')">(</button>
+        <button class="sci-btn op" onclick="pressStr(')')">)</button>
+        <button class="sci-btn op" onclick="pressStr('%')">%</button>
+        <!-- Row 4: Numbers + ops -->
+        <button class="sci-btn num" onclick="pressStr('7')">7</button>
+        <button class="sci-btn num" onclick="pressStr('8')">8</button>
+        <button class="sci-btn num" onclick="pressStr('9')">9</button>
+        <button class="sci-btn op"  onclick="pressStr('/')">÷</button>
+        <button class="sci-btn fn"  onclick="pressFn('fact')">n!</button>
+        <!-- Row 5 -->
+        <button class="sci-btn num" onclick="pressStr('4')">4</button>
+        <button class="sci-btn num" onclick="pressStr('5')">5</button>
+        <button class="sci-btn num" onclick="pressStr('6')">6</button>
+        <button class="sci-btn op"  onclick="pressStr('*')">×</button>
+        <button class="sci-btn fn"  onclick="pressStr('**2')">x²</button>
+        <!-- Row 6 -->
+        <button class="sci-btn num" onclick="pressStr('1')">1</button>
+        <button class="sci-btn num" onclick="pressStr('2')">2</button>
+        <button class="sci-btn num" onclick="pressStr('3')">3</button>
+        <button class="sci-btn op"  onclick="pressStr('-')">−</button>
+        <button class="sci-btn fn"  onclick="pressStr('**3')">x³</button>
+        <!-- Row 7 -->
+        <button class="sci-btn num span-2" onclick="pressStr('0')">0</button>
+        <button class="sci-btn num" onclick="pressStr('.')">.</button>
+        <button class="sci-btn op"  onclick="pressStr('+')">+</button>
+        <button class="sci-btn equal" onclick="pressEquals()">=</button>
+      </div>
+    </div>
+
+    <div class="alert alert-info" style="margin-top:16px">⌨️ Keyboard input is supported. Press Enter to evaluate.</div>
+  </div>
+</main>
+</div>
+<script src="/js/ui.js"></script>
+<script>
+  let expr = '', angleMode = 'deg', invMode = false, lastResult = null;
+  const display = () => document.getElementById('sciVal').textContent;
+  const setDisplay = v => {
+    document.getElementById('sciVal').textContent = v;
+    document.getElementById('sciExpr').textContent = expr;
+  };
+
+  function pressStr(s) { expr += s; setDisplay(expr); }
+  function pressAC() { expr = ''; setDisplay('0'); document.getElementById('sciExpr').textContent = ''; }
+  function pressDel() { expr = expr.slice(0,-1); setDisplay(expr || '0'); }
+
+  function toRad(x) { return angleMode === 'deg' ? x * Math.PI / 180 : x; }
+  function fromRad(x) { return angleMode === 'deg' ? x * 180 / Math.PI : x; }
+
+  function pressFn(fn) {
+    if (invMode) {
+      if (fn === 'sin') fn = 'asin';
+      else if (fn === 'cos') fn = 'acos';
+      else if (fn === 'tan') fn = 'atan';
+      else if (fn === 'log') fn = 'pow10';
+      else if (fn === 'ln') fn = 'exp';
+    }
+    switch(fn) {
+      case 'sin':    expr += `Math.sin(${toRad(1).toFixed(6).replace(/.*/, 'toRad')}(`; expr = expr.replace('toRad(',''); expr += `toRad(`; break;
+      case 'cos':    expr += `toRad(Math.cos(toRad(`; expr = expr.replace(/.*/, ''); expr += 'Math.cos(toRad('; break;
+      case 'asin':   expr += 'fromRad(Math.asin('; break;
+      case 'acos':   expr += 'fromRad(Math.acos('; break;
+      case 'atan':   expr += 'fromRad(Math.atan('; break;
+      case 'log':    expr += 'Math.log10('; break;
+      case 'ln':     expr += 'Math.log('; break;
+      case 'pow10':  expr += '10**('; break;
+      case 'exp':    expr += 'Math.exp('; break;
+      case 'sqrt':   expr += 'Math.sqrt('; break;
+      case 'abs':    expr += 'Math.abs('; break;
+      case 'fact':   expr += 'fact('; break;
+    }
+    setDisplay(expr);
+  }
+
+  function fact(n) {
+    if (n < 0) return NaN;
+    if (n === 0 || n === 1) return 1;
+    let r = 1; for (let i = 2; i <= n; i++) r *= i; return r;
+  }
+  function toRad2(x) { return angleMode === 'deg' ? x * Math.PI / 180 : x; }
+  function fromRad2(x) { return angleMode === 'deg' ? x * 180 / Math.PI : x; }
+
+  function pressEquals() {
+    try {
+      // Replace operators and trig functions with JS equivalents
+      let e = expr
+        .replace(/\^/g, '**')
+        .replace(/÷/g, '/')
+        .replace(/×/g, '*')
+        .replace(/−/g, '-')
+        .replace(/toRad\(/g, 'toRad2(')
+        .replace(/fromRad\(/g, 'fromRad2(');
+
+      // Inject trig with angle mode
+      e = e.replace(/Math\.sin\(/g, `Math.sin(toRad2(`)  .replace(/Math\.sin\(toRad2\(/g, (m, o) => m );
+      // Simple evaluation
+      // eslint-disable-next-line no-new-func
+      const result = Function('toRad2', 'fromRad2', 'fact', `"use strict"; return (${e})`)(toRad2, fromRad2, fact);
+      lastResult = result;
+      document.getElementById('sciExpr').textContent = expr + ' =';
+      document.getElementById('sciVal').textContent = Number.isFinite(result)
+        ? (Number.isInteger(result) ? result : parseFloat(result.toPrecision(10)))
+        : 'Error';
+      expr = String(result);
+    } catch(e) {
+      document.getElementById('sciVal').textContent = 'Error';
+      expr = '';
+    }
+  }
+
+  function setAngleMode(m) {
+    angleMode = m;
+    document.getElementById('degBtn').classList.toggle('active', m === 'deg');
+    document.getElementById('radBtn').classList.toggle('active', m === 'rad');
+  }
+  function toggleInv() {
+    invMode = !invMode;
+    document.getElementById('invBtn').classList.toggle('active', invMode);
+    document.getElementById('btn_sin').textContent  = invMode ? 'sin⁻¹' : 'sin';
+    document.getElementById('btn_cos').textContent  = invMode ? 'cos⁻¹' : 'cos';
+    document.getElementById('btn_tan').textContent  = invMode ? 'tan⁻¹' : 'tan';
+    document.getElementById('btn_log').textContent  = invMode ? '10ˣ' : 'log';
+    document.getElementById('btn_ln').textContent   = invMode ? 'eˣ' : 'ln';
+  }
+
+  // Keyboard support
+  document.addEventListener('keydown', e => {
+    if ('0123456789'.includes(e.key)) { pressStr(e.key); e.preventDefault(); }
+    else if ('+-*/'.includes(e.key)) { pressStr(e.key); e.preventDefault(); }
+    else if (e.key === '.') { pressStr('.'); e.preventDefault(); }
+    else if (e.key === '(' || e.key === ')') { pressStr(e.key); e.preventDefault(); }
+    else if (e.key === 'Enter' || e.key === '=') { pressEquals(); e.preventDefault(); }
+    else if (e.key === 'Backspace') { pressDel(); e.preventDefault(); }
+    else if (e.key === 'Escape') { pressAC(); e.preventDefault(); }
+  });
+</script>
+</body>
+</html>
+

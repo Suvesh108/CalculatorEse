@@ -1,0 +1,103 @@
+/* ==========================================================================
+   MOBILE & TALL SCREEN OPTIMIZATIONS (Targeting Portrait Aspect Ratios)
+   ========================================================================== */
+
+/* Target any portrait orientation or narrow screen */
+@media (max-width: 1060px), (orientation: portrait) {
+  .app-bar { padding: 0 24px; justify-content: space-between; }
+  .app-nav { display: none; }
+  .menu-toggle { display: flex; }
+  .uv-search { display: none; }
+  .main-content { padding: 32px 24px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+}
+
+/* Target standard mobile portraits (e.g., ~ 3:4 or narrower) */
+@media (max-aspect-ratio: 3/4), (max-width: 768px) {
+  .main-content { padding: 24px 16px; display: flex; flex-direction: column; }
+  .footer { padding: 48px 24px; }
+  
+  /* Hero should take up some meaningful height so content isn't cramped */
+  .hero { padding: 64px 16px 48px; min-height: 40vh; display: flex; flex-direction: column; justify-content: center; }
+  
+  /* Force single columns and strict viewport bounding on mobile portrait to fix horizontal overflow */
+  .calc-layout { 
+    display: flex; flex-direction: column; 
+    width: 100% !important; max-width: 100vw !important; box-sizing: border-box; overflow-x: hidden;
+  }
+  .calc-layout > * { width: 100% !important; max-width: 100vw !important; box-sizing: border-box; }
+  
+  .category-grid, .calc-grid, .form-row, .summary-cards { 
+    display: grid; grid-template-columns: 1fr; gap: 16px; 
+    width: 100% !important; max-width: 100% !important; box-sizing: border-box;
+  }
+  .calculator-card, .card, .category-card, .calc-card, .result-box { 
+    padding: 24px; width: 100% !important; max-width: 100% !important; box-sizing: border-box; 
+  }
+  
+  .summary-card[style*="grid-column:span 2"],
+  .summary-card[style*="grid-column: span 2"] {
+    grid-column: span 1 !important;
+  }
+  
+  /* Guarantee tables and nested elements shrink */
+  .mui-input, .mui-select, .results-table { width: 100% !important; max-width: 100% !important; box-sizing: border-box; }
+  
+  .stats-strip { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 24px 16px; text-align: center; }
+  .stats-strip .stat:last-child { grid-column: 1 / -1; }
+}
+
+/* Target strictly tall mobile screens like 16:9, 19.5:9, 20:9 */
+@media (max-aspect-ratio: 9/16), (max-width: 480px) {
+  .main-content { padding: 16px 12px; }
+  
+  /* Push content down for tall phones */
+  .hero { padding: 48px 12px 32px; min-height: 50vh; } 
+  
+  .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+  .footer { padding: 32px 16px; }
+  
+  /* Fluid typography specifically tuned for narrow viewports */
+  .hero__title { font-size: clamp(2rem, 10vw, 2.5rem); letter-spacing: -0.5px; }
+  .hero__subtitle { font-size: 1rem; margin-bottom: 32px; }
+  .section-header h2 { font-size: 1.5rem; }
+  
+  .stat__val { font-size: 2rem; }
+  
+  /* Taller hit targets for thumbs on modern tall screens */
+  .mui-input, .mui-select { padding-top: 18px; padding-bottom: 18px; font-size: 16px; }
+  .has-prefix .mui-input { padding-left: 56px; } 
+  .input-group .input-prefix { bottom: 18px; left: 20px; } 
+  .has-suffix .mui-input { padding-right: 56px; }
+  .input-group .input-suffix { bottom: 18px; right: 20px; }
+
+  .input-group { margin-bottom: 24px; }
+  .calculator-card h3 + select { margin-top: 12px; }
+  
+  .btn:not(.btn-sm) { width: 100%; justify-content: center; padding: 18px 24px; font-size: 1.05rem; }
+  .section-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .section-header .btn { width: auto; align-self: flex-start; }
+
+  /* Grid spacing adjustments to organically fill vertical void */
+  .category-grid, .calc-grid { gap: 20px; }
+  .calculator-card, .card, .category-card { padding: 32px 20px; }
+
+  /* Scientific Calculator */
+  .sci-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .sci-btn { padding: 22px 12px; font-size: 1.15rem; border-radius: 12px; }
+  .sci-display { min-height: 90px; padding: 20px; margin-bottom: 20px; }
+  .sci-display__value { font-size: 2.2rem; }
+}
+
+/* Extreme tall aspect ratios (e.g., 20:9, 21:9 modern flagships) */
+@media (max-aspect-ratio: 9/19) {
+  .hero { min-height: 60vh; }
+  .stats-strip { margin-bottom: 80px; padding: 40px 16px; gap: 32px; }
+  .main-content { padding-top: 40px; padding-bottom: 60px; }
+  .category-grid, .calc-grid { gap: 28px; }
+  
+  /* Even larger touch areas to span the vertical screen gracefully */
+  .mui-input, .mui-select { padding-top: 20px; padding-bottom: 20px; }
+  .input-group .input-prefix, .input-group .input-suffix { bottom: 20px; }
+  .btn:not(.btn-sm) { padding: 20px 24px; }
+}

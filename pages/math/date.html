@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Date Calculator – Days Between Dates | CalculatorEse</title>
+  <meta name="description" content="Free date calculator. Find the number of days, weeks, and months between two dates. Add and subtract days from a date. Calculate business days.">
+  <meta name="keywords" content="date calculator, days between dates, date difference, add days to date, business days calculator">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://calculatorese.io/pages/math/date.html">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/mobile.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>">
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+<div class="app-shell">
+<main class="main-content" id="main" role="main">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/index.html">Home</a><span class="breadcrumb-sep">›</span><span>Math</span><span class="breadcrumb-sep">›</span><span>Date Calculator</span></nav>
+  <div class="page-header">
+    <div class="page-header__eyebrow">Math</div>
+    <h1 class="page-header__title">📅 Date Calculator</h1>
+    <p class="page-header__desc">Calculate the difference between two dates, or add/subtract days, weeks, or months from a date.</p>
+  </div>
+
+  <div data-tabs>
+    <div class="tabs" style="max-width:480px">
+      <button class="tab-btn">Date Difference</button>
+      <button class="tab-btn">Add / Subtract</button>
+    </div>
+
+    <!-- Date Difference -->
+    <div class="tab-panel">
+      <div class="calc-layout">
+        <div class="calculator-card">
+          <h2 class="calc-title">Date Difference</h2>
+          <div class="input-group"><label for="d_from">Start Date</label><input type="date" id="d_from" class="mui-input"></div>
+          <div class="input-group"><label for="d_to">End Date</label><input type="date" id="d_to" class="mui-input"></div>
+          <button class="btn btn-primary btn-block btn-lg" onclick="calcDateDiff()">Calculate</button>
+        </div>
+        <div class="calculator-card" id="dateDiffResult" style="display:none">
+          <h2 class="calc-title">Difference</h2>
+          <div class="summary-cards">
+            <div class="summary-card"><div class="summary-card__label">Total Days</div><div class="summary-card__value primary" id="dd_days">—</div></div>
+            <div class="summary-card"><div class="summary-card__label">Total Weeks</div><div class="summary-card__value" id="dd_weeks">—</div></div>
+            <div class="summary-card"><div class="summary-card__label">Approx Months</div><div class="summary-card__value" id="dd_months">—</div></div>
+            <div class="summary-card"><div class="summary-card__label">Business Days</div><div class="summary-card__value accent" id="dd_biz">—</div></div>
+          </div>
+          <div class="divider"></div>
+          <div id="dd_breakdown" style="font-size:0.875rem;color:var(--text-secondary)">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add / Subtract -->
+    <div class="tab-panel">
+      <div class="calc-layout">
+        <div class="calculator-card">
+          <h2 class="calc-title">Add / Subtract Days</h2>
+          <div class="input-group"><label for="as_date">Start Date</label><input type="date" id="as_date" class="mui-input"></div>
+          <div class="form-row">
+            <div class="input-group"><label for="as_amount">Amount</label><input type="number" id="as_amount" class="mui-input" value="30" min="0"></div>
+            <div class="input-group"><label for="as_unit">Unit</label>
+              <select id="as_unit" class="mui-select">
+                <option value="1">Days</option>
+                <option value="7">Weeks</option>
+                <option value="30.44">Months (avg)</option>
+                <option value="365.25">Years (avg)</option>
+              </select>
+            </div>
+          </div>
+          <div class="tabs" style="margin-bottom:16px;max-width:240px">
+            <button class="tab-btn active" id="as_add_btn" onclick="setAsMode('add')">Add</button>
+            <button class="tab-btn" id="as_sub_btn" onclick="setAsMode('sub')">Subtract</button>
+          </div>
+          <button class="btn btn-primary btn-block btn-lg" onclick="calcAddSub()">Calculate</button>
+          <div id="addSubResult" class="result-box" style="display:none">
+            <div class="result-box__label">Resulting Date</div>
+            <div class="result-box__value" id="as_res">—</div>
+            <div class="result-box__sub" id="as_sub">—</div>
+          </div>
+        </div>
+        <div class="calculator-card" style="display:flex;align-items:center;justify-content:center">
+          <div style="text-align:center">
+            <div style="font-size:3rem;margin-bottom:12px">📅</div>
+            <div style="color:var(--text-secondary);font-size:0.875rem">Enter a start date and add<br>or subtract a time period.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</div>
+<script src="/js/ui.js"></script>
+<script>
+  // Default dates
+  const today = new Date(); today.setHours(0,0,0,0);
+  const todayStr = today.toISOString().split('T')[0];
+  document.getElementById('d_from').value = todayStr;
+  document.getElementById('d_to').value   = todayStr;
+  document.getElementById('as_date').value = todayStr;
+
+  let asMode = 'add';
+  function setAsMode(m) {
+    asMode = m;
+    document.getElementById('as_add_btn').classList.toggle('active', m === 'add');
+    document.getElementById('as_sub_btn').classList.toggle('active', m === 'sub');
+  }
+
+  function calcDateDiff() {
+    const d1 = new Date(document.getElementById('d_from').value);
+    const d2 = new Date(document.getElementById('d_to').value);
+    if (isNaN(d1) || isNaN(d2)) return;
+    const from = d1 < d2 ? d1 : d2, to = d1 < d2 ? d2 : d1;
+    const totalDays = Math.round((to - from) / 86400000);
+    const weeks = Math.floor(totalDays / 7);
+    const months = +(totalDays / 30.44).toFixed(1);
+
+    // Business days
+    let biz = 0, cur = new Date(from);
+    while (cur < to) { const dow = cur.getDay(); if (dow !== 0 && dow !== 6) biz++; cur.setDate(cur.getDate()+1); }
+
+    // Breakdown
+    let yrs = to.getFullYear() - from.getFullYear();
+    let mo  = to.getMonth()    - from.getMonth();
+    let dy  = to.getDate()     - from.getDate();
+    if (dy < 0) { mo--; dy += new Date(to.getFullYear(), to.getMonth(), 0).getDate(); }
+    if (mo < 0) { yrs--; mo += 12; }
+
+    document.getElementById('dd_days').textContent    = CalculatorEse.fmtNumber(totalDays, 0);
+    document.getElementById('dd_weeks').textContent   = CalculatorEse.fmtNumber(weeks, 0);
+    document.getElementById('dd_months').textContent  = months;
+    document.getElementById('dd_biz').textContent     = CalculatorEse.fmtNumber(biz, 0);
+    document.getElementById('dd_breakdown').innerHTML = `<b>Breakdown:</b> ${yrs} years, ${mo} months, ${dy} days<br><b>From:</b> ${from.toDateString()} &nbsp;→&nbsp; <b>To:</b> ${to.toDateString()}`;
+    document.getElementById('dateDiffResult').style.display = 'block';
+  }
+
+  function calcAddSub() {
+    const base   = new Date(document.getElementById('as_date').value);
+    const amount = parseFloat(document.getElementById('as_amount').value);
+    const unit   = parseFloat(document.getElementById('as_unit').value);
+    if (isNaN(base) || isNaN(amount)) return;
+    const days   = asMode === 'add' ? amount * unit : -amount * unit;
+    const result = new Date(base.getTime() + days * 86400000);
+    document.getElementById('as_res').textContent = result.toLocaleDateString('en-US', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    document.getElementById('as_sub').textContent = `${Math.abs(days).toFixed(0)} days ${asMode === 'add' ? 'added to' : 'subtracted from'} ${base.toDateString()}`;
+    document.getElementById('addSubResult').style.display = 'block';
+  }
+</script>
+</body>
+</html>
+

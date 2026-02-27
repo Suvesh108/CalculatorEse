@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Body Fat Calculator – Estimate Body Fat % | CalculatorEse</title>
+  <meta name="description" content="Free body fat percentage calculator using US Navy method and BMI method. Enter your measurements to estimate your body fat and lean mass.">
+  <meta name="keywords" content="body fat calculator, body fat percentage, lean mass, US Navy method, body composition">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://calculatorese.io/pages/health/bodyfat.html">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/mobile.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💪</text></svg>">
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+<div class="app-shell">
+<main class="main-content" id="main" role="main">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/index.html">Home</a><span class="breadcrumb-sep">›</span><span>Health</span><span class="breadcrumb-sep">›</span><span>Body Fat Calculator</span></nav>
+  <div class="page-header">
+    <div class="page-header__eyebrow">Health</div>
+    <h1 class="page-header__title">💪 Body Fat Calculator</h1>
+    <p class="page-header__desc">Estimate your body fat percentage using the US Navy circumference method. Get your fat mass, lean mass, and fitness category.</p>
+  </div>
+
+  <div class="calc-layout">
+    <div class="calculator-card">
+      <h2 class="calc-title">Your Measurements</h2>
+      <p class="calc-desc">Measure with a flexible tape at the widest point.</p>
+      <div class="form-row">
+        <div class="input-group"><label for="bf_sex">Sex</label><select id="bf_sex" class="mui-select" onchange="toggleHip()"><option value="male">Male</option><option value="female">Female</option></select></div>
+        <div class="input-group has-suffix"><label for="bf_age">Age</label><input type="number" id="bf_age" class="mui-input" value="30" min="15" max="100"><span class="input-suffix">yrs</span></div>
+      </div>
+      <div class="input-group has-suffix"><label for="bf_height">Height</label><input type="number" id="bf_height" class="mui-input" value="175" min="100" max="250"><span class="input-suffix">cm</span></div>
+      <div class="input-group has-suffix"><label for="bf_weight">Weight</label><input type="number" id="bf_weight" class="mui-input" value="80" min="30" max="300"><span class="input-suffix">kg</span></div>
+      <div class="input-group has-suffix"><label for="bf_neck">Neck Circumference</label><input type="number" id="bf_neck" class="mui-input" value="38" min="20" max="70"><span class="input-suffix">cm</span></div>
+      <div class="input-group has-suffix"><label for="bf_waist">Waist Circumference</label><input type="number" id="bf_waist" class="mui-input" value="85" min="40" max="200"><span class="input-suffix">cm</span></div>
+      <div id="hip_wrap" style="display:none" class="input-group has-suffix"><label for="bf_hip">Hip Circumference</label><input type="number" id="bf_hip" class="mui-input" value="95" min="40" max="200"><span class="input-suffix">cm</span></div>
+      <button class="btn btn-primary btn-block btn-lg" onclick="calcBodyFat()">Calculate Body Fat</button>
+    </div>
+
+    <div class="calculator-card" id="bfResult" style="display:none">
+      <h2 class="calc-title">Body Composition</h2>
+      <div style="text-align:center;padding:20px 0">
+        <div id="bf_pct" style="font-size:3.5rem;font-weight:800;font-family:var(--font-mono);color:var(--primary-light)">—</div>
+        <div id="bf_cat" class="chip" style="margin:10px auto;font-size:0.9rem;display:inline-flex">—</div>
+      </div>
+      <div class="summary-cards" style="margin-bottom:20px">
+        <div class="summary-card"><div class="summary-card__label">Body Fat Mass</div><div class="summary-card__value accent" id="bf_fatmass">—</div></div>
+        <div class="summary-card"><div class="summary-card__label">Lean Body Mass</div><div class="summary-card__value primary" id="bf_leanmass">—</div></div>
+      </div>
+      <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:12px;color:var(--text-secondary)">BODY FAT CATEGORIES</h3>
+      <table class="results-table" id="bf_table"><thead><tr><th>Category</th><th>Men</th><th>Women</th></tr></thead>
+        <tbody>
+          <tr><td>Essential Fat</td><td>2–5%</td><td>10–13%</td></tr>
+          <tr><td>Athletes</td><td>6–13%</td><td>14–20%</td></tr>
+          <tr><td>Fitness</td><td>14–17%</td><td>21–24%</td></tr>
+          <tr><td>Average</td><td>18–24%</td><td>25–31%</td></tr>
+          <tr><td>Obese</td><td>≥25%</td><td>≥32%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+</div>
+<script src="/js/ui.js"></script>
+<script>
+  function toggleHip() {
+    document.getElementById('hip_wrap').style.display =
+      document.getElementById('bf_sex').value === 'female' ? 'block' : 'none';
+  }
+  toggleHip();
+
+  function calcBodyFat() {
+    const sex    = document.getElementById('bf_sex').value;
+    const height = parseFloat(document.getElementById('bf_height').value);
+    const weight = parseFloat(document.getElementById('bf_weight').value);
+    const neck   = parseFloat(document.getElementById('bf_neck').value);
+    const waist  = parseFloat(document.getElementById('bf_waist').value);
+    const hip    = parseFloat(document.getElementById('bf_hip').value) || 0;
+
+    let bf;
+    if (sex === 'male') {
+      bf = 495 / (1.0324 - 0.19077 * Math.log10(waist - neck) + 0.15456 * Math.log10(height)) - 450;
+    } else {
+      bf = 495 / (1.29579 - 0.35004 * Math.log10(waist + hip - neck) + 0.22100 * Math.log10(height)) - 450;
+    }
+    bf = Math.max(0, Math.min(bf, 80));
+
+    const fatMass  = (bf / 100) * weight;
+    const leanMass = weight - fatMass;
+
+    let cat, chipClass;
+    if (sex === 'male') {
+      if (bf < 6) cat = 'Essential Fat', chipClass = '';
+      else if (bf < 14) cat = 'Athlete', chipClass = 'chip-success';
+      else if (bf < 18) cat = 'Fitness', chipClass = 'chip-success';
+      else if (bf < 25) cat = 'Average', chipClass = 'chip-warning';
+      else cat = 'Obese', chipClass = 'chip-error';
+    } else {
+      if (bf < 14) cat = 'Essential Fat', chipClass = '';
+      else if (bf < 21) cat = 'Athlete', chipClass = 'chip-success';
+      else if (bf < 25) cat = 'Fitness', chipClass = 'chip-success';
+      else if (bf < 32) cat = 'Average', chipClass = 'chip-warning';
+      else cat = 'Obese', chipClass = 'chip-error';
+    }
+
+    document.getElementById('bf_pct').textContent = bf.toFixed(1) + '%';
+    const catEl = document.getElementById('bf_cat');
+    catEl.textContent = cat; catEl.className = `chip ${chipClass}`;
+    catEl.style.cssText = 'margin:10px auto;font-size:0.9rem;display:inline-flex';
+    document.getElementById('bf_fatmass').textContent = fatMass.toFixed(1) + ' kg';
+    document.getElementById('bf_leanmass').textContent = leanMass.toFixed(1) + ' kg';
+    document.getElementById('bfResult').style.display = 'block';
+  }
+</script>
+</body>
+</html>
+

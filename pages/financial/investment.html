@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Investment Calculator – ROI & Future Value | CalculatorEse</title>
+  <meta name="description" content="Free investment calculator. Calculate future value, total return, and ROI on your investments. Accounts for inflation and regular contributions.">
+  <meta name="keywords" content="investment calculator, ROI calculator, future value, retirement calculator, CAGR">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://calculatorese.io/pages/financial/investment.html">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/mobile.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+<div class="app-shell">
+<main class="main-content" id="main" role="main">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/index.html">Home</a><span class="breadcrumb-sep">›</span><span>Financial</span><span class="breadcrumb-sep">›</span><span>Investment Calculator</span></nav>
+  <div class="page-header">
+    <div class="page-header__eyebrow">Financial</div>
+    <h1 class="page-header__title">📊 Investment Calculator</h1>
+    <p class="page-header__desc">Plan your financial future. Calculate projected returns, ROI, and see how inflation affects your purchasing power.</p>
+  </div>
+
+  <div class="calc-layout">
+    <div class="calculator-card">
+      <h2 class="calc-title">Investment Details</h2>
+      <div class="input-group has-prefix"><label for="inv_initial">Initial Amount</label><span class="input-prefix currency">$</span><input type="number" id="inv_initial" class="mui-input" value="10000" min="0"></div>
+      <div class="input-group has-prefix"><label for="inv_monthly">Monthly Contribution</label><span class="input-prefix currency">$</span><input type="number" id="inv_monthly" class="mui-input" value="500" min="0"></div>
+      <div class="input-group has-suffix"><label for="inv_return">Expected Annual Return</label><input type="number" id="inv_return" class="mui-input" value="10" min="0" step="0.1"><span class="input-suffix">%</span></div>
+      <div class="input-group has-suffix"><label for="inv_inflation">Annual Inflation Rate</label><input type="number" id="inv_inflation" class="mui-input" value="3" min="0" step="0.1"><span class="input-suffix">%</span></div>
+      <div class="input-group"><label for="inv_years">Investment Period (years)</label><input type="number" id="inv_years" class="mui-input" value="30" min="1"></div>
+      <button class="btn btn-primary btn-block btn-lg" onclick="calcInvestment()">Calculate</button>
+    </div>
+
+    <div>
+      <div class="calculator-card" id="invResult" style="display:none">
+        <h2 class="calc-title">Projected Returns</h2>
+        <div class="summary-cards" style="margin-bottom:20px">
+          <div class="summary-card"><div class="summary-card__label">Future Value</div><div class="summary-card__value primary" id="inv_fv">—</div></div>
+          <div class="summary-card"><div class="summary-card__label">Inflation-Adjusted</div><div class="summary-card__value" id="inv_real">—</div></div>
+          <div class="summary-card"><div class="summary-card__label">Total Invested</div><div class="summary-card__value" id="inv_invested">—</div></div>
+          <div class="summary-card"><div class="summary-card__label">Total Gains</div><div class="summary-card__value accent" id="inv_gains">—</div></div>
+          <div class="summary-card"><div class="summary-card__label">ROI</div><div class="summary-card__value" id="inv_roi">—</div></div>
+          <div class="summary-card"><div class="summary-card__label">CAGR</div><div class="summary-card__value" id="inv_cagr">—</div></div>
+        </div>
+        <h3 style="font-size:1rem;margin-bottom:12px">Growth Projection</h3>
+        <div style="overflow-y:auto;max-height:300px">
+          <table class="results-table">
+            <thead><tr><th>Year</th><th>Balance</th><th>Contributions</th><th>Gains</th></tr></thead>
+            <tbody id="inv_table"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</div>
+<script src="/js/ui.js"></script>
+<script>
+  function calcInvestment() {
+    const P  = parseFloat(document.getElementById('inv_initial').value) || 0;
+    const m  = parseFloat(document.getElementById('inv_monthly').value) || 0;
+    const r  = parseFloat(document.getElementById('inv_return').value) / 100;
+    const inf= parseFloat(document.getElementById('inv_inflation').value) / 100;
+    const t  = parseInt(document.getElementById('inv_years').value);
+    const mRate = r / 12;
+
+    let balance = P, totalContrib = P, rows = '';
+    for (let y = 1; y <= t; y++) {
+      for (let mo = 0; mo < 12; mo++) {
+        balance = balance * (1 + mRate) + m;
+        totalContrib += m;
+      }
+      rows += `<tr><td>${y}</td><td>${CalculatorEse.fmtCurrency(balance)}</td><td>${CalculatorEse.fmtCurrency(totalContrib)}</td><td>${CalculatorEse.fmtCurrency(balance - totalContrib)}</td></tr>`;
+    }
+
+    const realValue = balance / Math.pow(1 + inf, t);
+    const gains = balance - totalContrib;
+    const roi = (gains / totalContrib) * 100;
+    const cagr = (Math.pow(balance / P, 1 / t) - 1) * 100;
+
+    document.getElementById('inv_fv').textContent = CalculatorEse.fmtCurrency(balance);
+    document.getElementById('inv_real').textContent = CalculatorEse.fmtCurrency(realValue);
+    document.getElementById('inv_invested').textContent = CalculatorEse.fmtCurrency(totalContrib);
+    document.getElementById('inv_gains').textContent = CalculatorEse.fmtCurrency(gains);
+    document.getElementById('inv_roi').textContent = CalculatorEse.fmtPercent(roi);
+    document.getElementById('inv_cagr').textContent = CalculatorEse.fmtPercent(cagr, 2);
+    document.getElementById('inv_table').innerHTML = rows;
+    document.getElementById('invResult').style.display = 'block';
+  }
+  window.addEventListener('load', calcInvestment);
+</script>
+</body>
+</html>
+
