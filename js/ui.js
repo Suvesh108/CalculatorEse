@@ -188,7 +188,6 @@ function buildFooter() {
     </div>
     <div class="footer__bottom">
       <div class="footer__copyright">© ${new Date().getFullYear()} CalculatorEse. All rights reserved.</div>
-      <div style="font-size:0.8rem;color:var(--text-disabled);">Built with ♥ using HTML, CSS & JavaScript</div>
     </div>
   </footer>`;
 }
